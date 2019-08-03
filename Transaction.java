@@ -8,7 +8,7 @@ public class Transaction {
        public double amount;
        public String date;
        
-       // Withdraw, loan
+       // Withdraw, loan, save
        Transaction(TransactionType t, String s, double m, String d) {
     	   type = t;
     	   sender = s;
@@ -35,27 +35,31 @@ public class Transaction {
     	   date = d;
        }
        
+       
        public String toString( ) {
     	   StringBuilder sb = new StringBuilder();
     	   switch(type) {
     	   	 case SEND:
-    	   		 sb.append("User " + sender +" sends "+ money + " to User " + receiver + " on " + date);
+    	   		 sb.append("Account " + sender +" sends "+ money + " to User " + receiver + " on " + date);
     	   		 break;
     	   	
     	   	 case RECEIVE:
-    	   		 sb.append("User " + receiver + " receives " + money + " from User " +  receiver + " on " + date);
+    	   		 sb.append("Account " + receiver + " receives " + money + " from User " +  receiver + " on " + date);
     	   		 break;
     	     
     	   	 case BUY:
-    	   		 sb.append("User " + sender + " buys " + amount + " amount of " + investmentId + " with money " + money + " on " + date);
+    	   		 sb.append("Account " + sender + " buys " + amount + " amount of " + investmentId + " with money " + money + " on " + date);
     	   		 break;
     	   	 case WITHDRAW :
-    	   		 sb.append("User " + sender + " withdraws " + money+ " on " + date);
+    	   		 sb.append("Account " + sender + " withdraws " + money+ " on " + date);
     	   		 break;
     	   	
     	   	 case LOAN :
-    	   		sb.append("User " + sender + " borrows " + money+ " on " + date);
+    	   		sb.append("Account " + sender + " borrows " + money+ " on " + date);
    	   		 	break; 
+    	   	 case SAVE :
+    	   		 sb.append("Account " + sender + " saves " + money + " on " + date);
+    	   		 break;
    	   		 // SELL
     	     default:
     	    	 sb.append("User " + sender + " sells " + amount + " amount of " + investmentId + " and obtains " + money + " on " + date);

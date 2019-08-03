@@ -20,6 +20,18 @@ public class Account {
 		t = type;
 	}
 	
+	//account saves money m
+	
+	public boolean save(double m) {
+		if(m <= 0.0) {
+			return false;
+		}
+		money = money + m;
+		Date date = new Date();
+		transactions.add(new Transaction(TransactionType.SAVE, Aid, m, date.toString()));
+		return true;
+	}
+	
 	// account withdraws money m
 	public boolean withdraw(double m) {
 		if(money >= m) {

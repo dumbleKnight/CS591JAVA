@@ -75,6 +75,64 @@ public class Bank {
 		return users.get(Uid).logIn(password);
 	}
 
+	public String createCheckingAccount(String Uid) {
+		if(!users.containsKey(Uid)) {
+			return null;
+		}
+		User u = users.get(Uid);
+		String Aid = u.createCheckingAccount();
+		users.put(Uid, u);
+		return Aid;
+	}
+	
+	public String createCheckingAccount(String Uid, double money) {
+		if(!users.containsKey(Uid)) {
+			return null;
+		}
+		User u = users.get(Uid);
+		String Aid = u.createCheckingAccount();
+		if(Aid != null) {
+			users.put(Uid, u);
+		}
+		return Aid;
+	}
+	
+	public String createSavingAccount(String Uid) {
+		if(!users.containsKey(Uid)) {
+			return null;
+		}
+		User u = users.get(Uid);
+		String Aid = u.createSavingAccount();
+		users.put(Uid, u);
+		return Aid;
+	}
+	
+	public String createSavingAccount(String Uid, double money) {
+		if(!users.containsKey(Uid)) {
+			return null;
+		}
+		
+		User u = users.get(Uid);
+		String Aid = u.createCheckingAccount(money);
+		if(Aid != null) {
+			users.put(Uid, u);
+		}
+		return Aid;
+	}
+	
+	public String createSecurityAccount(String Uid,double money) {
+		if(!users.containsKey(Uid)) {
+			return null;
+		}
+		
+		User u = users.get(Uid);
+		String Aid = u.createSecurity(money);
+		if(Aid != null) {
+			users.put(Uid, u);
+		}
+		return Aid;
+	}
+	
 	public boolean close(String Uid) {
 		if(users.containsKey(Uid)) {
 			users.remove(Uid);
@@ -88,6 +146,20 @@ public class Bank {
 			return null;
 		}
 		return users.get(Uid);
+	}
+	
+	public boolean saveMoney(String Aid, double money) {
+		String uid = getUserID(Aid);
+		if(uid == null || !users.containsKey(uid)) {
+			return false;
+		}
+		
+		User u = users.get(uid);
+		if(u.saveMoney(Aid, money)) {
+			users.put(uid, u);
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean withdrawMoney(String Aid, double money) {

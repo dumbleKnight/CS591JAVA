@@ -44,6 +44,9 @@ public class User {
 	
 	public String createCheckingAccount(double money) {
 		String aid = generateAid();
+		if(money < 0.0) {
+			return null;
+		}
 		Account account = new CheckingAccount(aid, AccountType.Checking, money);
 		accounts.put(aid, account);
 		return aid;
@@ -58,6 +61,9 @@ public class User {
 	
 	public String createSavingAccount(double money) {
 		String aid = generateAid();
+		if(money < 0.0) {
+			return null;
+		}
 		Account account = new SavingAccount(aid, AccountType.Saving, money);
 		accounts.put(aid, account);
 		return aid;
@@ -94,6 +100,19 @@ public class User {
 			sb.append(entry.getValue());
 		}
 		return sb.toString();
+	}
+	
+	public boolean saveMoney(String sender, double m) {
+		if(!accounts.containsKey(sender)) {
+			return false;
+		}
+		
+		Account temp = accounts.get(sender);
+		if(temp.save(m)) {
+			accounts.put(sender, temp);
+			return true;
+		}
+		return false;		
 	}
 	
 	public boolean loanMoney(String sender, double m) {
