@@ -1,11 +1,15 @@
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+
+import backend.Account;
+import backend.AccountType;
 
 public class CheckAccount {
 
@@ -47,8 +51,28 @@ public class CheckAccount {
 		JList account_list = new JList(model);
 		account_list.setBounds(77, 53, 297, 120);
 		frame.getContentPane().add(account_list);
-		String[] accounts = new String[] {"Fake Account | Type | Balance"};
-		for(String account: accounts)
+		
+		//String[] accounts = new String[] {"Fake Account | Type | Balance"};
+		ArrayList<String> account_info = new ArrayList<String>();
+		for(String aid: UserMainPage.user.getAccountId()) {
+			String info;
+			Account account = UserMainPage.user.getAccount(aid);
+			AccountType type = account.accountType();
+			
+			switch(type) {
+			case Checking:
+				account_info.add(aid + " | " + "Checking"  + " | " + account.getMoney());
+				break;
+			case Saving:
+				account_info.add(aid + " | " + "Saving"  + " | " + account.getMoney());
+				break;
+			case Security:
+				account_info.add(aid + " | " + "Security"  + " | " + account.getMoney());
+				break;
+			}
+		}
+		
+		for(String account: account_info)
 			model.addElement(account);
 		
 		account_list.addMouseListener(new MouseAdapter() {

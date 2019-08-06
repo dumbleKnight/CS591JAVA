@@ -75,8 +75,27 @@ public class CreateAccount {
 				
 				System.out.println(account_type + " " + balance);
 				
-				new UserMainPage();
-				frame.dispose();
+				String is_success = null;
+				switch(account_type){
+					case "Saving account":
+						is_success = MainPage.bank.createSavingAccount(UserMainPage.user.getUid(), balance);
+						break;
+					case "Checking account":
+						is_success = MainPage.bank.createCheckingAccount(UserMainPage.user.getUid(), balance);
+						break;
+					case "Security account":
+						is_success = MainPage.bank.createSecurityAccount(UserMainPage.user.getUid(), balance);
+						break;
+				}
+				
+				if(is_success != null) {
+					new UserMainPage();
+					System.out.println(UserMainPage.user.getAccount(is_success).getMoney());
+					frame.dispose();
+				}
+				else {
+					System.out.println("Failed to create account");
+				}
 			}
 		});
 		

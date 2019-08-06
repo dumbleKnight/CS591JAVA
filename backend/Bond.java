@@ -1,3 +1,5 @@
+package backend;
+
 public class Bond extends Investment{
 	protected double weeklyInterestRate;
 	protected double monthlyInterestRate;

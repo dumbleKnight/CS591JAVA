@@ -1,3 +1,6 @@
+import backend.Bank;
+import backend.User;
+
 import java.awt.EventQueue;
 
 import javax.swing.*;
@@ -15,7 +18,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class LogIn {
-
 	private JFrame frame;
 	private JTextField uname;
 	private JTextField psw;
@@ -73,9 +75,17 @@ public class LogIn {
 		login_btn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				new UserMainPage();
-				
-				frame.dispose();
+				System.out.println(MainPage.bank.logIn(uname.getText(), psw.getText()));
+				System.out.println(uname.getText() + " " + psw.getText());
+				if(MainPage.bank.logIn(uname.getText(), psw.getText())) {
+					UserMainPage.user = MainPage.bank.getUser(uname.getText());
+					new UserMainPage();
+
+					frame.dispose();
+				}
+				else {
+					System.out.println("Invalid input");
+				}
 			}
 		});
 		login_btn.setBounds(94, 189, 97, 25);

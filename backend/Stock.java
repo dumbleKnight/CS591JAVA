@@ -1,3 +1,4 @@
+package backend;
 
 public class Stock extends Investment {
 	private double price;

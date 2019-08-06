@@ -1,11 +1,13 @@
+package backend;
+
 import java.util.Date;
 import java.util.HashMap;
 
 public class SecurityAccount extends Account {
 	private HashMap<String, Property> property; //<key : sid, value : property>
 	
-	SecurityAccount(String id, AccountType t, double m) {
-		super(id, t, m);
+	SecurityAccount(String id, double m) {
+		super(id, AccountType.Security, m);
 	}
 	
 	public boolean buyBond(double Money, Investment i, Property.InterestRate irate, double interest) {

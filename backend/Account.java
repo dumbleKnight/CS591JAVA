@@ -1,3 +1,5 @@
+package backend;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -11,13 +13,14 @@ public class Account {
 	Account(String id, AccountType t){
 		money = 0;
 		Aid = id;
-		t = type;
+		type = t;
+		transactions = new ArrayList<Transaction>();
 	}
 	
 	Account(String id, AccountType t, double m) {
 		money = m;
 		Aid = id;
-		t = type;
+		type = t;
 	}
 	
 	//account saves money m

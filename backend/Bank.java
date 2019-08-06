@@ -1,3 +1,5 @@
+package backend;
+
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -7,7 +9,7 @@ public class Bank {
 	private static int userCount;
 	private static int investmentCount;
 	
-	Bank() {
+	public Bank() {
 		userCount = 0;
 		investmentCount = 0;
 		users = new HashMap<String, User>();
@@ -61,9 +63,10 @@ public class Bank {
 		return true;
 	}
 
-	public String createAccounts(String name, String password) {
+	public String createUser(String name, String password) {
 		String uid = generateUserId();
 		User temp = new User(uid, password, name);
+		
 		users.put(uid, temp);
 		return uid;
 	}
@@ -90,7 +93,7 @@ public class Bank {
 			return null;
 		}
 		User u = users.get(Uid);
-		String Aid = u.createCheckingAccount();
+		String Aid = u.createCheckingAccount(money);
 		if(Aid != null) {
 			users.put(Uid, u);
 		}
@@ -113,7 +116,7 @@ public class Bank {
 		}
 		
 		User u = users.get(Uid);
-		String Aid = u.createCheckingAccount(money);
+		String Aid = u.createSavingAccount(money);
 		if(Aid != null) {
 			users.put(Uid, u);
 		}

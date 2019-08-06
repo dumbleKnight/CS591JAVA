@@ -15,11 +15,16 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.GridLayout;
 import javax.swing.SwingConstants;
+
+import backend.Bank;
+import backend.User;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class UserMainPage {
-
+	static User user;
+	
 	private JFrame frame;
 
 	/**
@@ -54,15 +59,29 @@ public class UserMainPage {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JLabel lblHelloXxx = new JLabel("Hello, XXX!");
-		lblHelloXxx.setHorizontalAlignment(SwingConstants.CENTER);
-		lblHelloXxx.setBounds(144, 32, 135, 32);
-		frame.getContentPane().add(lblHelloXxx);
+		JLabel greeting_label = new JLabel("Hello, " + user.getName() + "!");
+		greeting_label.setHorizontalAlignment(SwingConstants.CENTER);
+		greeting_label.setBounds(144, 32, 135, 32);
+		frame.getContentPane().add(greeting_label);
 		
 		DefaultListModel<String> model = new DefaultListModel<>();
 		JList<String> option_list = new JList<String>(model);
 		option_list.setBounds(89, 89, 268, 113);
 		frame.getContentPane().add(option_list);
+		
+		JButton logout_btn = new JButton("Log Out");
+		logout_btn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Bank bank = MainPage.bank;
+				new MainPage();
+				MainPage.bank = bank;
+				
+				frame.dispose();
+			}
+		});
+		logout_btn.setBounds(182, 215, 97, 25);
+		frame.getContentPane().add(logout_btn);
 		
 		model.addElement("Create account");
 		model.addElement("Check account");

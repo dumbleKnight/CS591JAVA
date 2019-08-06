@@ -77,8 +77,12 @@ public class CreateUser {
 		signup.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				new UserMainPage();
+				String uid = MainPage.bank.createUser(uname.getText(), psw.getText());
+				System.out.println("UID: " + uid + " " + "psw: " + psw.getText());
 				
+				UserMainPage.user = MainPage.bank.getUser(uid);
+				
+				new UserMainPage();
 				frame.dispose();
 			}
 		});

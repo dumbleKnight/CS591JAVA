@@ -1,3 +1,5 @@
+package backend;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -24,8 +26,12 @@ public class User {
 		return sb.toString();
 	}
 	
+	public String getName() {
+		return this.name;
+	}
+	
 	public boolean logIn(String p) {
-		if(p != password) {
+		if(!p.equals(password)) {
 			return false;
 		}
 		return true;
@@ -37,7 +43,7 @@ public class User {
 	
 	public String createCheckingAccount() {
 		String aid = generateAid();
-		CheckingAccount account = new CheckingAccount(aid, AccountType.Checking);
+		CheckingAccount account = new CheckingAccount(aid);
 		accounts.put(aid, account);
 		return aid;
 	}
@@ -47,14 +53,14 @@ public class User {
 		if(money < 0.0) {
 			return null;
 		}
-		Account account = new CheckingAccount(aid, AccountType.Checking, money);
+		Account account = new CheckingAccount(aid, money);
 		accounts.put(aid, account);
 		return aid;
 	}
 	
 	public String createSavingAccount() {
 		String aid = generateAid();
-		Account account = new SavingAccount(aid, AccountType.Saving);
+		Account account = new SavingAccount(aid);
 		accounts.put(aid, account);
 		return aid;
 	}
@@ -64,17 +70,19 @@ public class User {
 		if(money < 0.0) {
 			return null;
 		}
-		Account account = new SavingAccount(aid, AccountType.Saving, money);
+		Account account = new SavingAccount(aid, money);
 		accounts.put(aid, account);
 		return aid;
 	}
 
-	public String createSecurity(double money) {
+	public String createSecurity(double money) 
+	
+	{
 		if(money < 5000) {
 			return null;
 		}
 		String aid = generateAid();
-		Account account = new SecurityAccount(aid, AccountType.Security, money);
+		Account account = new SecurityAccount(aid, money);
 		accounts.put(aid, account);
 		return aid;
 	}
@@ -84,11 +92,14 @@ public class User {
 		for(String Aid : accounts.keySet()) {
 			res.add(Aid);
 		}
+		
 		return res;
 	}
 	
 	public Account getAccount(String Aid) { 
 		if(accounts.containsKey(Aid)) {
+			
+			
 			return accounts.get(Aid);
 		}
 		return null;
