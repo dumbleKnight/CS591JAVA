@@ -2,8 +2,13 @@
 public class Stock extends Investment {
 	private double price;
 	private String name;
+<<<<<<< HEAD
 	private double amount; 
 	Stock(String ID, double p, String n, double amount) {
+=======
+	private int amount; //there's only a fixed amount of stock that users can buy
+	Stock(String ID, double p, String n) {
+>>>>>>> b8413d70c9e32007c595483fea5f35bf02d28d2b
 		super(ID, "Stock");	
 		setPrice(p);
 		setName(n);
