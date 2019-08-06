@@ -8,6 +8,10 @@ public class SecurityAccount extends Account {
 		super(id, t, m);
 	}
 	
+	public void parseProperty() {
+		
+	}
+	
 	public boolean buyBond(double Money, Investment i, Property.InterestRate irate, double interest) {
 		if(money < Money || Money <= 0.0 || property.containsKey(i.getId())) {
 			return false;

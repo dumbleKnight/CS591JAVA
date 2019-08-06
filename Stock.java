@@ -2,10 +2,12 @@
 public class Stock extends Investment {
 	private double price;
 	private String name;
-	Stock(String ID, double p, String n) {
+	private double amount; 
+	Stock(String ID, double p, String n, double amount) {
 		super(ID, "Stock");	
 		setPrice(p);
 		setName(n);
+		this.amount = amount;
 	}
 	
 	// change the price of the stock 
@@ -26,7 +28,11 @@ public class Stock extends Investment {
 	public void setPrice(double price) {
 		this.price = price;
 	}
-
+	
+	public double getAmount() {
+		return amount;
+	}
+	
 	public String getName() {
 		return name;
 	}

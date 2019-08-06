@@ -17,7 +17,7 @@ public class Bank {
 	private static int investmentCount;
 	static String userPath = "/Users/kangtungho/Desktop/user.json";
 	static String accountPath = "/Users/kangtungho/Desktop/account.json";
-	static String investPath = "/Users/kangtungho/Desktop/investment.json";
+	static String investPath = "/Users/kangtungho/Desktop/investments.json";
 	/*
 	 * Structure for user.json
 	 */
@@ -30,7 +30,7 @@ public class Bank {
 		investmentCount = 0; //adjust this based on investments_init 
 		users = new HashMap<String, User>();
 		investments = new HashMap<String, Investment>();
-		//investments_init()
+		investments_init();
 		user_init();
 	}
 
@@ -76,14 +76,25 @@ public class Bank {
 	private void parseBondObject(JSONObject bond) {
 		String investmentId = (String) bond.get("investmentId");
 		System.out.println(investmentId);
+		
+		String name = (String) bond.get("name");
+		System.out.println(name);
+		
+		double interest = (double) bond.get("interest");
+		System.out.println("interest is " + interest);
+		
+		double price = (double) bond.get("price");
+		System.out.println("price is " + price);
+		
+		Bond temp = new Bond(investmentId, interest, price, name);
+		
+		investments.put(investmentId, temp);
+		
 	}
 	
 	private void parseStockObject(JSONObject stock) {
 		String investmentId = (String) stock.get("investmentId");
 		System.out.println(investmentId);
-		
-		String type = (String) stock.get("type");
-		System.out.println(type);
 		
 		double price = (double) stock.get("price");
 		System.out.println(price);
@@ -91,6 +102,12 @@ public class Bank {
 		String name = (String) stock.get("name");
 		System.out.println(name);
 		
+		double amount = (double) stock.get("amount");
+		System.out.println("stock has " + amount);
+		
+		Stock temp = new Stock(investmentId, price, name, amount);
+		
+		investments.put(investmentId, temp);
 		
 		
 		
@@ -189,69 +206,8 @@ public class Bank {
         
     }
 	
-//	private void parseUserAccount(JSONObject account, User user) {
-//		Account temp;
-//		
-//		//Get account id
-//        String aid = (String) account.get("aid");
-//        System.out.println("aid is: " + aid);
-//        
-//        //Get user password
-//        String type = (String) account.get("type");
-//        System.out.println("type is: " + type);
-//        
-//        double interest = (String) account.get("interest");
-//        System.out.println("interest rate is: " + interest);
-//        
-//        //Get user name
-//        double money = (String) account.get("money");
-//        System.out.println("money is: " + money);
-//        
-//        
-//        
-//        if (type.equals("checking")) {
-//        	temp = new CheckingAccount(aid, AccountType.Checking, money);
-//        }
-//        else if (type.equals("saving")) {
-//        	temp = new SavingAccount(aid, AccountType.Saving, money);
-//        }
-//        else {
-//        	temp = new SecurityAccount(aid, AccountType.Security, money);
-//        }
-//        
-//        try (FileReader reader = new FileReader(transPath)) {
-//            //Read JSON file
-//            Object obj = jsonParser.parse(reader);
-// 
-//            JSONArray transList = (JSONArray) obj;
-//            //System.out.println(userList);
-//             
-//            //Iterate over employee array
-//            //userList.forEach( usr -> parseUserObject( (JSONObject) usr ) );
-//            for (int i = 0; i < transList.size(); i++) {
-//            	JSONObject transObj = (JSONObject)transList.get(i);
-//            	if (transObj.containsKey(aid)) {
-//            		parseUserTrans(transObj, temp);
-//            		user.accounts.put(aid, temp);
-//            		break;
-//            	}
-//            }
-//            
-//            
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        
-//        
-//    }
-    
-    private void parseUserTrans(JSONArray lst) {
-    	
-    }
+
+ 
     
     public void getUserCount() {
     	System.out.println(userCount);
@@ -278,29 +234,29 @@ public class Bank {
 		return sb.toString();
 	}
 	
-	public boolean addStock(double p, String n) {
+	public boolean addStock(double p, String n, int amount) {
 		if(p <= 0.0) {
 			return false;
 		}
 		String sid = generateInvestmentId();
-		Stock temp = new Stock(sid, p, n);
+		Stock temp = new Stock(sid, p, n, amount);
 		investments.put(sid, temp);
 		return true;
 	}
 	
-	public boolean addBond() {
-		String sid = generateInvestmentId();
-		Bond temp = new Bond(sid);
-		investments.put(sid, temp);
-		return true;
-	}
+//	public boolean addBond() {
+//		String sid = generateInvestmentId();
+//		Bond temp = new Bond(sid);
+//		investments.put(sid, temp);
+//		return true;
+//	}
 	
-	public boolean addBond(double d1, double d2, double d3) {
-		if(d1 <= 0.0 || d2 <= 0.0 || d3 <= 0.0) {
-			return false;
-		}
+	public boolean addBond(double interest, double price, String name) {
+//		if(d1 <= 0.0 || d2 <= 0.0 || d3 <= 0.0) {
+//			return false;
+//		}
 		String sid = generateInvestmentId();
-		Bond temp = new Bond(sid, d1, d2, d3);
+		Bond temp = new Bond(sid, interest, price, name);
 		investments.put(sid, temp);
 		return true;
 	}
@@ -530,6 +486,7 @@ public class Bank {
 	public String getInvestmentInfo() {
 		StringBuilder sb = new StringBuilder();
 		for(Entry<String, Investment> e : investments.entrySet()) {
+			//System.out.println(e.getValue()); 
 			sb.append(e.getValue());
 		}
 		return sb.toString();

@@ -87,6 +87,9 @@ public class User {
             	JSONObject transObj = (JSONObject)transList.get(i);
             	if (transObj.containsKey(aid)) {
             		temp.parseUserTrans(transObj);
+//            		if (type.equals("security")) {
+//            			temp.parseProperty();
+//            		}
             		accounts.put(aid, temp);
             		break;
             	}

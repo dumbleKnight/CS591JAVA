@@ -104,18 +104,7 @@ public class Account {
     	}
     }
 	
-	private void transactions_init() {
-		//The Json file should store the aID as the first parameter
-		//initialize accounts that are stored in DB
-		//first check for if data base is empty
-		//while loop the objects in the JSON file
-		//In each iteration
-		//1. create new Transaction
-		//2. check for transaction type ( 1. send/recieve, 2. sell/buy, 3. withdraw/loan/save
-		//3. fill in the appropriate fields according to trans type
-		//4. add to transaction arraylist
-		
-	}
+
 	
 	//account saves money m
 	
