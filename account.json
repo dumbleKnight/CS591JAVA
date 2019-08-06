@@ -20,6 +20,13 @@
 	{ 
 		"aid": "5",
 		"money": 100.0,
+		"interest": 0.0,
+		"type": "security"
+	},
+
+	{ 
+		"aid": "5",
+		"money": 100.0,
 		"interest": 0.3,
 		"type": "saving"
 	},

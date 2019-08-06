@@ -1,39 +1,45 @@
 [
 	{
 		"investmentId": "1",
-		"name": "Weekly",
 		"type": "Bond",
-		"Interest": 0.02
+		"name": "Weekly",
+		"price": 100.0,
+		"interest": 0.01
 
 	},
 	{
 		"investmentId": "2",
-		"name": "Monthly",
 		"type": "Bond",
-		"Interest": 0.02
+		"name": "Monthly",
+		"price": 200.0,
+		"interest": 0.02
 	},
 	{
 		"investmentId": "3",
-		"name": "Weekly",
 		"type": "Bond",
-		"Interest": 0.02
+		"name": "Yearly",
+		"price": 300.0,
+		"interest": 0.05
 	},
 	{
 		"investmentId": "4",
 		"type": "Stock",
 		"price": 10.0,
+		"amount": 100.0,
 		"name": "Apple"
 	},
 	{
 		"investmentId": "5",
 		"type": "Stock",
 		"price": 11.0,
+		"amount": 100.0,
 		"name": "Google"
 	},
 	{
 		"investmentId": "6",
 		"type": "Stock",
 		"price": 12.0,
+		"amount": 100.0,
 		"name": "Amazon"
 	}
 ]
