@@ -2,8 +2,10 @@
 
 public class Investment {	
 	protected String id;
-	Investment(String ID) {
+	String type;
+	Investment(String ID, String type ) {
 		id  = ID;
+		this.type = type;
 	}
 	
 	public String getId() {

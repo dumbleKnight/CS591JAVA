@@ -1,0 +1,50 @@
+[
+	{
+		"1": 
+		[
+			{
+				"type": "Receive",
+				"sender": "Tom",
+				"receiver": "Chris",
+				"money": 100.0,
+				"investmentId": "",
+				"amount": 0,
+				"date": "5/25"
+			},
+			{
+				"type": "Save",
+				"sender": "Tom",
+				"receiver": "",
+				"money": 100.0,
+				"investmentId": "",
+				"amount": 0,
+				"date": "5/25"
+			}
+		]
+
+	
+	},
+	{
+		"6":
+		[
+			{
+				"type": "Send",
+				"sender": "Chris",
+				"receiver": "Tom",
+				"money": 100.0,
+				"investmentId": "",
+				"amount": 0,
+				"date": "5/25"
+			},
+			{
+				"type": "Withdraw",
+				"sender": "Chris",
+				"receiver": "",
+				"money": 100.0,
+				"investmentId": "",
+				"amount": 0,
+				"date": "5/25"
+			}
+		]
+	}
+]

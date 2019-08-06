@@ -4,14 +4,14 @@ public class Bond extends Investment{
 	protected double yearlyInterestRate;
 	
 	Bond(String ID) {
-		super(ID);
+		super(ID, "Bond");
 		weeklyInterestRate = 0.02;
 		monthlyInterestRate = 0.03;
 		yearlyInterestRate = 0.06;
 	}
 	
 	Bond(String ID, double d1, double d2, double d3) {
-		super(ID);
+		super(ID, "Bond");
 		weeklyInterestRate = d1;
 		monthlyInterestRate = d2;
 		yearlyInterestRate = d3;

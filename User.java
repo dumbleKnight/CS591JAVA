@@ -1,13 +1,26 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 public class User {
-	static private int count;
+	static private int count; //not sure how to use this 
 	private String Uid;
 	private String password;
 	private String name;
+	private String[] aids;
 	private HashMap<String, Account> accounts;
+	private static String transPath = "/Users/kangtungho/Desktop/transaction.json";
+
+	
+	//uid->aids mapping JSON file
 	
 	User(String uid, String p, String n){
 		count = 0;
@@ -15,6 +28,89 @@ public class User {
 		password = p;
 		name = n;
 		accounts = new HashMap<String, Account>();
+		//might need a list of aid that user has 
+		//accounts_init()
+	}
+	
+	User(String uid, String p, String n, String[] aids){
+		count = 0;
+		Uid = uid;
+		password = p;
+		name = n;
+		this.aids = aids;
+		accounts = new HashMap<String, Account>();
+		//might need a list of aid that user has 
+		//accounts_init()
+	}
+	
+	public void parseUserAccount(JSONObject account) {
+		Account temp;
+		
+		//Get account id
+        String aid = (String) account.get("aid");
+        System.out.println("aid is: " + aid);
+        
+        //Get user password
+        String type = (String) account.get("type");
+        System.out.println("type is: " + type);
+        
+        double interest = (double) account.get("interest");
+        System.out.println("interest rate is: " + interest);
+        
+        //Get user name
+        double money = (double) account.get("money");
+        System.out.println("money is: " + money);
+        
+        
+        
+        if (type.equals("checking")) {
+        	temp = new CheckingAccount(aid, AccountType.Checking, money);
+        }
+        else if (type.equals("saving")) {
+        	temp = new SavingAccount(aid, AccountType.Saving, money);
+        }
+        else {
+        	temp = new SecurityAccount(aid, AccountType.Security, money);
+        }
+        JSONParser jsonParser = new JSONParser();
+        
+        try (FileReader reader = new FileReader(transPath)) {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+ 
+            JSONArray transList = (JSONArray) obj;
+            //System.out.println(userList);
+             
+            //Iterate over employee array
+            //userList.forEach( usr -> parseUserObject( (JSONObject) usr ) );
+            for (int i = 0; i < transList.size(); i++) {
+            	JSONObject transObj = (JSONObject)transList.get(i);
+            	if (transObj.containsKey(aid)) {
+            		temp.parseUserTrans(transObj);
+            		accounts.put(aid, temp);
+            		break;
+            	}
+            }
+            
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        
+        
+    }
+	
+	private void store_data() {
+		
+	}
+	
+	private void accounts_init() {
+		//initialize user account data retried from DB
+		//first check for if data base is empty
 	}
 		
 	private String generateAid() {

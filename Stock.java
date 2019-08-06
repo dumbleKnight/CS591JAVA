@@ -3,7 +3,7 @@ public class Stock extends Investment {
 	private double price;
 	private String name;
 	Stock(String ID, double p, String n) {
-		super(ID);	
+		super(ID, "Stock");	
 		setPrice(p);
 		setName(n);
 	}
