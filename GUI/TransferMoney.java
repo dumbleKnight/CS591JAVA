@@ -1,21 +1,23 @@
 import java.awt.EventQueue;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import backend.Account;
 import backend.AccountType;
 
-public class WithdrawMoney {
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class TransferMoney {
 
 	private JFrame frame;
+	private JTextField aid_txt;
 	private JTextField money_txt;
 
 	/**
@@ -25,7 +27,7 @@ public class WithdrawMoney {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					WithdrawMoney window = new WithdrawMoney();
+					TransferMoney window = new TransferMoney();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -37,7 +39,7 @@ public class WithdrawMoney {
 	/**
 	 * Create the application.
 	 */
-	public WithdrawMoney() {
+	public TransferMoney() {
 		initialize();
 	}
 
@@ -52,7 +54,7 @@ public class WithdrawMoney {
 		
 		DefaultListModel<String> model = new DefaultListModel<>();
 		JList account_list = new JList(model);
-		account_list.setBounds(77, 53, 297, 120);
+		account_list.setBounds(102, 27, 219, 95);
 		frame.getContentPane().add(account_list);
 		
 		//String[] accounts = new String[] {"Fake Account | Type | Balance"};
@@ -78,40 +80,48 @@ public class WithdrawMoney {
 		for(String account: account_info)
 			model.addElement(account);
 		
+		JLabel lblNewLabel = new JLabel("To");
+		lblNewLabel.setBounds(101, 135, 108, 32);
+		frame.getContentPane().add(lblNewLabel);
+		
+		aid_txt = new JTextField();
+		aid_txt.setBounds(144, 140, 116, 22);
+		frame.getContentPane().add(aid_txt);
+		aid_txt.setColumns(10);
+		
+		JLabel lblAmount = new JLabel("Amount");
+		lblAmount.setBounds(89, 180, 56, 16);
+		frame.getContentPane().add(lblAmount);
 		
 		money_txt = new JTextField();
-		money_txt.setBounds(226, 180, 116, 22);
+		money_txt.setBounds(144, 180, 116, 22);
 		frame.getContentPane().add(money_txt);
 		money_txt.setColumns(10);
 		
-		String s1[] = { "currency1", "currency2", "currency3" };
-		JComboBox currency_combobox = new JComboBox(s1);
-		currency_combobox.setBounds(104, 180, 97, 22);
-		frame.getContentPane().add(currency_combobox);
-		
-		JButton Confirm = new JButton("Confirm");
-		Confirm.addMouseListener(new MouseAdapter() {
+		JButton confirm_btn = new JButton("Confirm");
+		confirm_btn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				String account = (String) account_list.getSelectedValue();
-				String currency = (String) currency_combobox.getSelectedItem();
+				String another_aid = aid_txt.getText();
 				Double money = Double.valueOf(money_txt.getText());
-				System.out.println(account + " " + currency + " " + money);
+				System.out.println(account + " " + another_aid + " " + money);
 				
 				String account_id = account.split(" | ")[0];
-				if(MainPage.bank.withdrawMoney(account_id, money)) {
+				
+				if(MainPage.bank.sendMoney(money, another_aid, account_id)) {
 					new UserMainPage();
 					frame.dispose();
 				}
 				else {
-					System.out.println("Failed to withdraw the money");
+					System.out.println("Failed to transfer the money");
 				}
+				
 			}
 		});
-		Confirm.setBounds(176, 215, 97, 25);
-		frame.getContentPane().add(Confirm);
+		confirm_btn.setBounds(165, 215, 97, 25);
+		frame.getContentPane().add(confirm_btn);
 		
 		frame.setVisible(true);
 	}
-
 }

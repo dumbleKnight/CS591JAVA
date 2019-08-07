@@ -99,7 +99,8 @@ public class DepositMoney {
 				Double money = Double.valueOf(money_txt.getText());
 				System.out.println(account + " " + currency + " " + money);
 				
-				
+				String account_id = account.split(" | ")[0];
+				MainPage.bank.saveMoney(account_id, money);
 				
 				new UserMainPage();
 				frame.dispose();

@@ -2,6 +2,7 @@ package backend;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class Bank {
 	private HashMap<String, User> users;
@@ -143,12 +144,27 @@ public class Bank {
 		}
 		return false;
 	}
+	
+	public boolean closeAccount(String Aid) {
+		String uid = getUserID(Aid);
+		if(uid == null || !users.containsKey(uid)) {
+			return false;
+		}
+		
+		User u = users.get(uid);
+		u.closeAccount(Aid);
+		return true;
+	}
 
 	public User getUser(String Uid) {
 		if(!users.containsKey(Uid)) {
 			return null;
 		}
 		return users.get(Uid);
+	}
+	
+	public Set<String> getUserList() {
+		return users.keySet();
 	}
 	
 	public boolean saveMoney(String Aid, double money) {

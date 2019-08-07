@@ -5,7 +5,6 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import backend.Bank;
-import backend.ManagerPage;
 
 import javax.swing.JComboBox;
 import javax.swing.JButton;
@@ -68,7 +67,7 @@ public class MainPage {
 				String role = (String) role_comboBox.getSelectedItem();
 				
 				if(role.equals("Manager")) {
-					new ManagerPage();
+					new ManagerMainPage();
 					frame.dispose();
 				}
 				else if(role.equals("User")) {

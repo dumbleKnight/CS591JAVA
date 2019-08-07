@@ -87,6 +87,7 @@ public class UserMainPage {
 		model.addElement("Check account");
 		model.addElement("Deposit");
 		model.addElement("Withdraw");
+		model.addElement("Transfer");
 		model.addElement("Close account");
 		
 		option_list.addMouseListener(new MouseAdapter() {
@@ -115,6 +116,11 @@ public class UserMainPage {
 		        	   break;
 		           case "Withdraw":
 		        	   new WithdrawMoney();
+		        	   frame.dispose();
+		        	   
+		        	   break;
+		           case "Transfer":
+		        	   new TransferMoney();
 		        	   frame.dispose();
 		        	   
 		        	   break;

@@ -81,9 +81,17 @@ public class CheckAccount {
 					String account = (String) account_list.getSelectedValue();
 					System.out.println("Jump to the relevant page: " + account);
 					
-					new AccountPageNormal();
+					String account_id = account.split(" | ")[0];
+					AccountType type = UserMainPage.user.getAccount(account_id).accountType();
+					if(type.equals(AccountType.Checking) || type.equals(AccountType.Saving)) {
+						new AccountPageNormal(account_id);
+						
+			        	frame.dispose();
+					}
+					else if(type.equals(AccountType.Security)) {
+			        	frame.dispose();
+					}
 					
-		        	frame.dispose();
 			    }
 			}
 		});

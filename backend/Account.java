@@ -21,6 +21,7 @@ public class Account {
 		money = m;
 		Aid = id;
 		type = t;
+		transactions = new ArrayList<Transaction>();
 	}
 	
 	//account saves money m
@@ -90,6 +91,7 @@ public class Account {
 		StringBuilder sb = new StringBuilder();
 		for(Transaction t : transactions) {
 			sb.append(t);
+			sb.append(" | ");
 		}
 		return sb.toString();
 	}
