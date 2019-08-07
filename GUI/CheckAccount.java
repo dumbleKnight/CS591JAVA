@@ -89,6 +89,9 @@ public class CheckAccount {
 			        	frame.dispose();
 					}
 					else if(type.equals(AccountType.Security)) {
+						SecuritiesInterface.account_id = account_id;
+						SecuritiesInterface.createSecuritiesOptions();
+						
 			        	frame.dispose();
 					}
 					

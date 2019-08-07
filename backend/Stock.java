@@ -3,10 +3,12 @@ package backend;
 public class Stock extends Investment {
 	private double price;
 	private String name;
-	Stock(String ID, double p, String n) {
+	private String ticker;
+	Stock(String ID, double p, String n, String t) {
 		super(ID);	
 		setPrice(p);
 		setName(n);
+		setTicker(t);
 	}
 	
 	// change the price of the stock 
@@ -16,10 +18,14 @@ public class Stock extends Investment {
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Stock ID: " + id);
+		sb.append(id + "-" + name + "-" + ticker + "-" + price);
 		return sb.toString();
 	}
-
+	
+	private void setTicker(String t) {
+		this.ticker = t;
+	}
+	
 	public double getPrice() {
 		return price;
 	}

@@ -20,6 +20,15 @@ public class Property {
 		now = Instant.now();
 	}
 	
+	public String toString() {
+		StringBuilder sp = new StringBuilder();
+		sp.append(investment);
+		sp.append("-");
+		sp.append(amount);
+		
+		return sp.toString();
+	}
+	
 	Property(double a, Investment i, InterestRate irate, double in){
 		amount = a;
 		investment = i;

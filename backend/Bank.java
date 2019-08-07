@@ -15,6 +15,14 @@ public class Bank {
 		investmentCount = 0;
 		users = new HashMap<String, User>();
 		investments = new HashMap<String, Investment>();
+		
+		addStock(10.0, "Google", "GOOGL");
+		addStock(10.0, "Apple", "AAPL");
+		addStock(10.0, "Microsoft", "MSFT");
+		
+		addBond();
+		addBond();
+		addBond();
 	}
 	
 	private String generateUserId() {
@@ -37,12 +45,12 @@ public class Bank {
 		return sb.toString();
 	}
 	
-	public boolean addStock(double p, String n) {
-		if(p <= 0.0) {
+	public boolean addStock(double p, String n, String t) {
+		if(p <= 0.0) { 
 			return false;
 		}
 		String sid = generateInvestmentId();
-		Stock temp = new Stock(sid, p, n);
+		Stock temp = new Stock(sid, p, n, t);
 		investments.put(sid, temp);
 		return true;
 	}
@@ -255,7 +263,7 @@ public class Bank {
 		Investment i = investments.get(sid);
 		User u = users.get(uid);
 		
-		if(i instanceof Stock && ((Stock) i).getPrice() <= price) {
+		if(i instanceof Stock) {
 			if(u.buyStock(i, amount, price, sender)) {
 				users.put(uid, u);
 				return true;
@@ -306,6 +314,7 @@ public class Bank {
 		StringBuilder sb = new StringBuilder();
 		for(Entry<String, Investment> e : investments.entrySet()) {
 			sb.append(e.getValue());
+			sb.append("|");
 		}
 		return sb.toString();
 	}

@@ -176,8 +176,8 @@ public class User {
 			return false;
 		}
 		SecurityAccount temp = (SecurityAccount) accounts.get(sender);
-		
-		if(temp.buyStock(i, amount, price)) {
+		double p = ((Stock)i).getPrice() ;
+		if(temp.buyStock(i, amount, p)) {
 			accounts.put(sender, temp);
 			return true;
 		}

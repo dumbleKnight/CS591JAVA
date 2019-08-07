@@ -1,13 +1,26 @@
 package backend;
 
+
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class SecurityAccount extends Account {
 	private HashMap<String, Property> property; //<key : sid, value : property>
 	
 	SecurityAccount(String id, double m) {
 		super(id, AccountType.Security, m);
+		property = new HashMap<String, Property>();
+	}
+	
+	public String getInvestment() {
+		StringBuilder sp = new StringBuilder();
+		
+		for(Entry<String, Property> investment: property.entrySet()) {
+			sp.append(investment);
+			sp.append("|");
+		}
+		return sp.toString();
 	}
 	
 	public boolean buyBond(double Money, Investment i, Property.InterestRate irate, double interest) {
