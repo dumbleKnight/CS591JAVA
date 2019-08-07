@@ -3,11 +3,22 @@
 	"4": 
 	[
 		{
-			"investmentId": "4",
-			"now": "",
-			"due": "",
+			"investmentId": "1",
+			"type": "Bond",
+			"price": 100.0,
+			"name": "Weekly",
+			"now": "5/12/18 12:30 PM",
+			"due": "5/19/18 12:30 PM",
 			"amount": 10.0, 
-			"interest": 0.02
+			"interest": 0.01
+		},
+		{
+			"investmentId": "4",
+			"type": "Stock",
+			"now": "5/13/18 12:30 PM",
+			"price": 10.0,
+			"amount": 10.0,
+			"name": "Apple"
 		}
 	]
 }

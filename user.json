@@ -3,13 +3,13 @@
 		"uid": "1",
 		"password": "1234",
 		"name": "Tom",
-		"aids": ["1","2"]
+		"aids": ["1","2", "4"]
 	},
 	{
 		"uid": "2",
 		"password": "5678",
 		"name": "Chris",
-		"aids": []
+		"aids": ["3","5"]
 	}
 
 ]
