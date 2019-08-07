@@ -64,13 +64,15 @@ public class User {
         
         
         if (type.equals("checking")) {
-        	temp = new CheckingAccount(aid, AccountType.Checking, money);
+        	temp = new CheckingAccount(aid,money);
         }
         else if (type.equals("saving")) {
-        	temp = new SavingAccount(aid, AccountType.Saving, money);
+        	temp = new SavingAccount(aid, money);
         }
-        else {
-        	temp = new SecurityAccount(aid, AccountType.Security, money);
+        else  {
+        	System.out.println("SECURITY ACCOUNT MADE");
+        	temp = new SecurityAccount(aid, money);
+        	((SecurityAccount) temp).parseProperty();
         }
         JSONParser jsonParser = new JSONParser();
         
@@ -85,11 +87,8 @@ public class User {
             //userList.forEach( usr -> parseUserObject( (JSONObject) usr ) );
             for (int i = 0; i < transList.size(); i++) {
             	JSONObject transObj = (JSONObject)transList.get(i);
-            	if (transObj.containsKey(aid)) {
+            	if (transObj.containsKey(aid)) { 
             		temp.parseUserTrans(transObj);
-//            		if (type.equals("security")) {
-//            			temp.parseProperty();
-//            		}
             		accounts.put(aid, temp);
             		break;
             	}
@@ -111,11 +110,6 @@ public class User {
 		
 	}
 	
-	private void accounts_init() {
-		//initialize user account data retried from DB
-		//first check for if data base is empty
-	}
-		
 	private String generateAid() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(Uid + "-");
@@ -136,7 +130,7 @@ public class User {
 	
 	public String createCheckingAccount() {
 		String aid = generateAid();
-		CheckingAccount account = new CheckingAccount(aid, AccountType.Checking);
+		CheckingAccount account = new CheckingAccount(aid);
 		accounts.put(aid, account);
 		return aid;
 	}
@@ -146,14 +140,14 @@ public class User {
 		if(money < 0.0) {
 			return null;
 		}
-		Account account = new CheckingAccount(aid, AccountType.Checking, money);
+		Account account = new CheckingAccount(aid, money);
 		accounts.put(aid, account);
 		return aid;
 	}
 	
 	public String createSavingAccount() {
 		String aid = generateAid();
-		Account account = new SavingAccount(aid, AccountType.Saving);
+		Account account = new SavingAccount(aid);
 		accounts.put(aid, account);
 		return aid;
 	}
@@ -163,7 +157,7 @@ public class User {
 		if(money < 0.0) {
 			return null;
 		}
-		Account account = new SavingAccount(aid, AccountType.Saving, money);
+		Account account = new SavingAccount(aid, money);
 		accounts.put(aid, account);
 		return aid;
 	}
@@ -173,7 +167,7 @@ public class User {
 			return null;
 		}
 		String aid = generateAid();
-		Account account = new SecurityAccount(aid, AccountType.Security, money);
+		Account account = new SecurityAccount(aid, money);
 		accounts.put(aid, account);
 		return aid;
 	}

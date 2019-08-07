@@ -6,13 +6,29 @@ public class Property {
 	private Instant now;
 	private Instant due;
 	private double amount; // stock : number of share, bond : 
-	private double interest; // used for bond
+	private double interest; // used for bond, don't need this can get it from investment
 	
 	static public enum InterestRate{
 		WEEK, MONTH, YEAR
 	}
 	
+	Property(Investment i, Instant now, Instant due, double amount, double interest) {
+		//for initializing bond from DB 
+		this.investment = i;
+		this.now = now;
+		this.due = due;
+		this.amount = amount;
+		this.interest = interest;
+	}
+	
+	Property(double a, Investment i, Instant now) {
+		amount = a;
+		investment = i;
+		this.now = now;
+	}
+	
 	Property(double a, Investment i) {
+		//why do we need now
 		amount = a;
 		investment = i;
 		now = Instant.now();

@@ -1,13 +1,13 @@
 
 public class CheckingAccount extends Account {
 
-	CheckingAccount(String id, AccountType t) {
-		super(id, t);
+	CheckingAccount(String id) {
+		super(id, AccountType.Checking);
 		interestRate = 0.01;
 	}
 	
-	CheckingAccount(String id, AccountType t, double m) {
-		super(id, t, m);
+	CheckingAccount(String id, double m) {
+		super(id, AccountType.Checking, m);
 		interestRate = 0.01;
 		
 	}

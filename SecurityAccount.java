@@ -1,15 +1,114 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+
 
 public class SecurityAccount extends Account {
+	private static String propertyPath = "/Users/kangtungho/Desktop/property.json";
 	private HashMap<String, Property> property; //<key : sid, value : property>
 	
-	SecurityAccount(String id, AccountType t, double m) {
-		super(id, t, m);
+	SecurityAccount(String id, double m) {
+		super(id, AccountType.Security, m);
+		property = new HashMap<String, Property>();
 	}
 	
 	public void parseProperty() {
+		JSONParser jsonParser = new JSONParser();
+        
+        try (FileReader reader = new FileReader(propertyPath))
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+ 
+            JSONArray propertyList = (JSONArray) obj;
+            for (int i = 0; i < propertyList.size(); i++) {
+            	JSONObject properties = (JSONObject) propertyList.get(i);
+            	if (properties.containsKey(Aid)) {
+            		insertProperties( (JSONArray) properties.get(Aid));
+            		break;
+            	}
+            }
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	private void insertProperties(JSONArray properties) {
+		String type;
+		String investmentId;
+		double price;
+		String name;
+		double amount;
+		double interest;
+		Instant due;
+		Instant now;
 		
+		for (int i = 0 ;i < properties.size(); i++) {
+			JSONObject propertyObj = (JSONObject) properties.get(i);
+			type = (String) propertyObj.get("type");
+			if (type.equals("Stock")) {
+				investmentId = (String) propertyObj.get("investmentId");
+				name = (String) propertyObj.get("name");
+				price = (double) propertyObj.get("price");
+				amount = (double) propertyObj.get("amount");
+				now = parseTime((String) propertyObj.get("now"));
+				Stock invest = new Stock(investmentId, price, name);
+				System.out.println(invest);
+				Property prop = new Property(amount, invest, now); // deal with instant later 
+				property.put(investmentId, prop);
+			}
+			else {
+				investmentId = (String) propertyObj.get("investmentId");
+				name = (String) propertyObj.get("name");
+				price = (double) propertyObj.get("price");
+				amount = (double) propertyObj.get("amount");
+				interest = (double) propertyObj.get("interest");
+				due = parseTime((String) propertyObj.get("due"));
+				now = parseTime((String) propertyObj.get("now"));
+				Bond invest = new Bond(investmentId, interest, price, name);
+				System.out.println(invest);
+				Property prop = new Property(invest, now, due, amount, interest);
+				property.put(investmentId, prop);
+				
+			}
+		}
+	}
+	
+	private Instant parseTime(String time) {
+		DateTimeFormatter f = DateTimeFormatter.ofPattern( "M/d/uu h:mm a" , Locale.US );  // Specify locale to determine human language and cultural norms used in translating that input string.
+		LocalDateTime ldt = LocalDateTime.parse( time , f );
+		ZoneId z = ZoneId.of( "America/Toronto" ) ;
+		java.time.ZonedDateTime zdt = ldt.atZone( z ) ; 
+		Instant instant = zdt.toInstant() ;
+		return instant;
+	}
+	
+	private String parseInstant(Instant time) {
+		DateTimeFormatter formatter =
+			    DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
+			                     .withLocale( Locale.US )
+			                     .withZone( ZoneId.systemDefault() );
+		String output = formatter.format( time );
+		return output;
 	}
 	
 	public boolean buyBond(double Money, Investment i, Property.InterestRate irate, double interest) {
@@ -18,8 +117,8 @@ public class SecurityAccount extends Account {
 		}
 		money = money - Money;
 		property.put(i.getId(), new Property(Money, i, irate, interest));
-		Date date = new Date();
-		transactions.add(new Transaction(TransactionType.BUY, Aid, i.getId(), Money, Money, date.toString()));
+		Instant now = Instant.now();
+		transactions.add(new Transaction(TransactionType.BUY, Aid, i.getId(), Money, Money, parseInstant(now)));
 		return true;		
 	}
 	
@@ -39,8 +138,8 @@ public class SecurityAccount extends Account {
 		}
 		property.put(i.getId(), temp);
 		
-		Date date = new Date();
-		transactions.add(new Transaction(TransactionType.BUY, Aid, i.getId(), expense, (double)amount, date.toString()));
+		Instant now = Instant.now();
+		transactions.add(new Transaction(TransactionType.BUY, Aid, i.getId(), expense, (double)amount, parseInstant(now)));
 		return true;
 	}
 	
@@ -51,8 +150,8 @@ public class SecurityAccount extends Account {
 		
 		double amount = property.get(sid).getAmount();
 		double profit = property.get(sid).sell();
-		Date date = new Date();
-		transactions.add(new Transaction(TransactionType.SELL, Aid, sid, profit, amount, date.toString()));
+		Instant now = Instant.now();
+		transactions.add(new Transaction(TransactionType.SELL, Aid, sid, profit, amount, parseInstant(now)));
 		money = money + profit;
 		property.remove(sid);
 		
@@ -67,8 +166,8 @@ public class SecurityAccount extends Account {
 		double profit = temp.sell(amount, price);
 		property.put(sid, temp);
 		
-		Date date = new Date();
-		transactions.add(new Transaction(TransactionType.SELL, Aid, sid, profit, amount, date.toString()));
+		Instant now = Instant.now();
+		transactions.add(new Transaction(TransactionType.SELL, Aid, sid, profit, amount, parseInstant(now)));
 		money = money + profit;
 		
 		if(property.get(sid).empty()) {

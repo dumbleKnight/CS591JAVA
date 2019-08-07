@@ -1,5 +1,10 @@
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -11,19 +16,6 @@ public class Account {
 	protected double interestRate; //this shouldn't be in account, bank should have it
 	protected AccountType type;
 	
-	/*
-	 * About/Structure of transaction.json
-	 * 1st key should be aid
-	 * once indexed through aid, object inside is the transaction
-	 * each transaction has field of:
-	 * public TransactionType type;
-       public String sender ; // uid
-       public String receiver ; // uid
-       public double money;
-       public String investmentId;
-       public double amount;
-       public String date;
-	 */
 	
 	Account(String id, AccountType t){
 		money = 0;
@@ -113,8 +105,8 @@ public class Account {
 			return false;
 		}
 		money = money + m;
-		Date date = new Date();
-		transactions.add(new Transaction(TransactionType.SAVE, Aid, m, date.toString()));
+		Instant now = Instant.now();
+		transactions.add(new Transaction(TransactionType.SAVE, Aid, m, parseInstant(now)));
 		return true;
 	}
 	
@@ -122,8 +114,8 @@ public class Account {
 	public boolean withdraw(double m) {
 		if(money >= m) {
 			money = money - m;
-			Date date = new Date();
-			transactions.add(new Transaction(TransactionType.WITHDRAW, Aid, m, date.toString()));
+			Instant now = Instant.now();
+			transactions.add(new Transaction(TransactionType.WITHDRAW, Aid, m, parseInstant(now)));
 			return true;
 		}
 		return false;
@@ -132,16 +124,16 @@ public class Account {
 	// account borrows money m from bank
 	public boolean loan(double m) {
 		money = money - mortgage(m);
-		Date date = new Date();
-		transactions.add(new Transaction(TransactionType.LOAN, Aid, m, date.toString()));
+		Instant now = Instant.now();
+		transactions.add(new Transaction(TransactionType.LOAN, Aid, m, parseInstant(now)));
 		return true;
 	}
 	
 	// account receives money m from sender
 	public boolean receive(double m, String sender) {
 		money = money + m;
-		Date date = new Date();
-		transactions.add(new Transaction(TransactionType.RECEIVE, sender, Aid, m, date.toString()));
+		Instant now = Instant.now(); 
+		transactions.add(new Transaction(TransactionType.RECEIVE, sender, Aid, m, parseInstant(now)));
 		return true;
 	}
 	
@@ -149,11 +141,20 @@ public class Account {
 	public boolean send(double m, String receiver) {
 		if(money >= m) {
 			money = money - m;
-			Date date = new Date();
-			transactions.add(new Transaction(TransactionType.SEND, Aid, receiver, m, date.toString()));
+			Instant now = Instant.now();
+			transactions.add(new Transaction(TransactionType.SEND, Aid, receiver, m, parseInstant(now)));
 			return true;
 		}
 		return false;
+	}
+	
+	private String parseInstant(Instant time) {
+		DateTimeFormatter formatter =
+			    DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
+			                     .withLocale( Locale.US )
+			                     .withZone( ZoneId.systemDefault() );
+		String output = formatter.format( time );
+		return output;
 	}
 	
 	protected double mortgage(double m) {
