@@ -1,3 +1,4 @@
+import java.io.FileWriter;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -96,7 +97,96 @@ public class Account {
     	}
     }
 	
+	public void storeTrans(JSONArray finalJSON) {
+		JSONObject aidObj = new JSONObject();
+		JSONArray transList = new JSONArray();
+		for (Transaction tran : transactions) { 
+			JSONObject tranObj = new JSONObject();
+			TransactionType tranType = tran.type;
+			if (tranType == TransactionType.WITHDRAW || tranType == TransactionType.LOAN || tranType == TransactionType.SAVE) {
+				// Withdraw, loan, save
+				String sender = tran.sender;
+				double money = tran.money;
+				String date = tran.date;
+				switch (tranType) {
+				case WITHDRAW:
+					tranObj.put("type", "Withdraw");
+					break;
+				case LOAN:
+					tranObj.put("type", "Loan");
+					break;
+				case SAVE:
+					tranObj.put("type", "Save");
+					break;	
+				}
+				tranObj.put("sender", sender);
+				tranObj.put("money", money);
+				tranObj.put("date", date);
+				
+			}
+			else if (tranType == TransactionType.SEND || tranType == TransactionType.RECEIVE) {
+				// Send, Receive 
+				String sender = tran.sender;
+				String receiver = tran.receiver;
+				double money = tran.money;
+				String date = tran.date;
+				switch (tranType) {
+				case SEND:
+					tranObj.put("type", "Send");
+					break;
+				case RECEIVE:
+					tranObj.put("type", "Receive");
+					break;
+				}
+				tranObj.put("sender", sender);
+				tranObj.put("receiver", receiver);
+				tranObj.put("money", money);
+				tranObj.put("date", date);
+			}
+			else {
+				// Buy, Sell
+				String sender = tran.sender;
+				String investmentId = tran.investmentId;
+				double money = tran.money;
+				double amount = tran.money;
+				String date = tran.date;
+				switch (tranType) {
+				case BUY:
+					tranObj.put("type", "Buy");
+					break;
+				case SELL:
+					tranObj.put("type", "Sell");
+					break;
+				}
+				tranObj.put("sender", sender);
+				tranObj.put("investmentId", investmentId);
+				tranObj.put("money", money);
+				tranObj.put("amount", amount);
+				tranObj.put("date", date);
+			
+			}
+			transList.add(tranObj);
+	      }
+		aidObj.put(Aid,transList);
+		finalJSON.add(aidObj);
+		
+		try
+        {
+            
+            // Create a new FileWriter object
+            FileWriter fileWriter = new FileWriter("/Users/kangtungho/Desktop/tranOutput.json");
 
+            // Writting the jsonObject into sample.json
+            fileWriter.write(finalJSON.toJSONString());
+            fileWriter.close();
+
+            System.out.println("JSON Object Successfully written to the file!!");
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+	}
 	
 	//account saves money m
 	

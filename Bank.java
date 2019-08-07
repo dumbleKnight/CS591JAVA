@@ -1,8 +1,10 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.json.simple.JSONArray;
@@ -28,7 +30,12 @@ public class Bank {
 		investments_init();
 		user_init();
 	}
-
+	
+	public void showAccounts() { 
+		for (User user : users.values()) {
+			user.printAccounts();
+		}
+	}
 	public static boolean contains(String[] arr, String targetValue) {
 	    for (String s: arr) {
 	        if (s.equals(targetValue))
@@ -146,22 +153,26 @@ public class Bank {
 		String aid;
         //Get user id
         String uid = (String) user.get("uid");
-        System.out.println("uid is: " + uid);
+        
         
         //Get user password
         String password = (String) user.get("password");
-        System.out.println("password is: " + password);
+        
          
         //Get user name
         String name = (String) user.get("name");
-        System.out.println("name is: " + name);
+        
         
         JSONArray js_array = (JSONArray) user.get("aids");
         String[] aid_array = new String[js_array.size()];
         for (int i = 0; i < aid_array.length; i++) {
         	aid_array[i] = (String.valueOf(js_array.get(i)));
         }
-        System.out.println(Arrays.toString(aid_array));
+        
+//        System.out.println("uid is: " + uid);
+//        System.out.println("password is: " + password);
+//        System.out.println("name is: " + name);
+//        System.out.println(Arrays.toString(aid_array));
         
         User temp = new User(uid, password, name, aid_array);
         
@@ -198,9 +209,74 @@ public class Bank {
         
     }
 	
-	public void closeBank() {
-		//store all bank data into json file
+
+	public void writeUser() {
+		JSONArray finalJSON = new JSONArray();
+		for (User user : users.values()) {
+			JSONObject jsonObject = new JSONObject();
 		
+		    String uid = user.getUid();
+		    jsonObject.put("uid", uid);
+		    String password = user.getPassword();
+		    jsonObject.put("password", password);
+		    String name = user.getName();
+		    jsonObject.put("name", name);
+		    String[] aids = user.getAids();
+		    JSONArray jsonArray = new JSONArray();
+		    for (String s: aids) {
+		    	jsonArray.add(s);
+		    }
+		    jsonObject.put("aids", jsonArray);
+		    finalJSON.add(jsonObject);
+		    
+		    
+		}
+		 try
+	        {
+	            
+	            // Create a new FileWriter object
+	            FileWriter fileWriter = new FileWriter("/Users/kangtungho/Desktop/userOutput.json");
+
+	            // Writting the jsonObject into sample.json
+	            fileWriter.write(finalJSON.toJSONString());
+	            fileWriter.close();
+
+	            System.out.println("JSON Object Successfully written to the file!!");
+
+	        } catch (Exception e)
+	        {
+	            e.printStackTrace();
+	        }
+	}
+	
+	public void writeAccount() {
+		JSONArray finalJSON = new JSONArray();
+		for (User user : users.values()) {
+			System.out.println(user.getName());
+			user.storeAccount(finalJSON);
+		}
+		try
+        {
+            // Create a new FileWriter object
+            FileWriter fileWriter = new FileWriter("/Users/kangtungho/Desktop/accountOutput.json");
+
+            // Writting the jsonObject into sample.json
+            fileWriter.write(finalJSON.toJSONString());
+            fileWriter.close();
+
+            System.out.println("JSON Object Successfully written to the file!!");
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+	}
+	
+	public void writeTransaction() {
+		JSONArray finalJSON = new JSONArray();
+		for (User user : users.values()) {
+			user.toAccount(finalJSON);
+		}
 	}
     
     public void getUserCount() {
@@ -482,9 +558,12 @@ public class Bank {
 		for(Entry<String, Investment> e : investments.entrySet()) {
 			//System.out.println(e.getValue()); 
 			sb.append(e.getValue());
+			sb.append("\n");
 		}
 		return sb.toString();
 	}
+	
+	
 	
 	static public void main(String[] args) { 
 		String test = "1-1";

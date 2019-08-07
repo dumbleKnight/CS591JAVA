@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,25 +44,31 @@ public class User {
 		//accounts_init()
 	}
 	
+	public void printAccounts() {
+		for (Account acc : accounts.values()) {
+			System.out.println(acc.Aid);
+		}
+	}
+	
 	public void parseUserAccount(JSONObject account) {
 		Account temp;
 		
 		//Get account id
         String aid = (String) account.get("aid");
-        System.out.println("aid is: " + aid);
         
         //Get user password
         String type = (String) account.get("type");
-        System.out.println("type is: " + type);
         
         double interest = (double) account.get("interest");
-        System.out.println("interest rate is: " + interest);
         
         //Get user name
         double money = (double) account.get("money");
-        System.out.println("money is: " + money);
         
         
+//        System.out.println("aid is: " + aid);
+//        System.out.println("type is: " + type);
+//        System.out.println("interest rate is: " + interest);
+//        System.out.println("money is: " + money);
         
         if (type.equals("checking")) {
         	temp = new CheckingAccount(aid,money);
@@ -70,7 +77,6 @@ public class User {
         	temp = new SavingAccount(aid, money);
         }
         else  {
-        	System.out.println("SECURITY ACCOUNT MADE");
         	temp = new SecurityAccount(aid, money);
         	((SecurityAccount) temp).parseProperty();
         }
@@ -89,10 +95,10 @@ public class User {
             	JSONObject transObj = (JSONObject)transList.get(i);
             	if (transObj.containsKey(aid)) { 
             		temp.parseUserTrans(transObj);
-            		accounts.put(aid, temp);
             		break;
             	}
             }
+            accounts.put(aid, temp);
             
             
         } catch (FileNotFoundException e) {
@@ -106,9 +112,40 @@ public class User {
         
     }
 	
-	private void store_data() {
-		
+	public void storeAccount(JSONArray finalJSON) {
+		String type;
+		for (Account acc : accounts.values()) {
+			System.out.println(acc.Aid);
+			JSONObject jsonObject = new JSONObject();
+			
+			String aid = acc.Aid;
+			jsonObject.put("aid", aid);
+			double money = acc.money;
+			jsonObject.put("money", money);
+			double interest = acc.interestRate;
+			jsonObject.put("interest", interest);
+			AccountType accType = acc.type;
+			if (accType==AccountType.Saving) {
+				type = "saving";
+			}
+			else if (accType == AccountType.Checking) {
+				type = "checking";
+			}
+			else {
+				type = "security";
+			}
+			jsonObject.put("type", type);
+			finalJSON.add(jsonObject);
+		}
+		 
 	}
+	
+	public void toAccount(JSONArray finalJSON) {
+		for (Account acc : accounts.values()) {
+			acc.storeTrans(finalJSON);
+		}
+	}
+	
 	
 	private String generateAid() {
 		StringBuilder sb = new StringBuilder();
@@ -126,6 +163,18 @@ public class User {
 	
 	public String getUid() {
 		return Uid;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public String[] getAids() {
+		return aids;
 	}
 	
 	public String createCheckingAccount() {
