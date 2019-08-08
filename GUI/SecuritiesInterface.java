@@ -14,6 +14,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import backend.Bank;
+import backend.Property;
 import backend.SecurityAccount;
 
 
@@ -204,24 +205,46 @@ public class SecuritiesInterface extends JPanel {
     buyPage.add(bondPane);
     marketOrBuy.addTab("Buy Investments", buyPage);
     
-//    confirmBonds.addMouseListener(new MouseAdapter() {
-//		@Override
-//		public void mouseClicked(MouseEvent arg0) {
-//			Integer num = Integer.valueOf(numBonds.getText());
-//			String stock_id = (String) bondMenu.getSelectedItem();
-//			
-//			if(MainPage.bank.buyBond(Money, sid, irate, interest, account_id)) {
-//			  JFrame success = new JFrame();
-//              JOptionPane.showMessageDialog(success, "Purchase succesful!");
-//              MainPage.bank.changePrice();
-//				
-//			}
-//			else {
-//			  JFrame fail = new JFrame();
-//              JOptionPane.showMessageDialog(fail, "Purchase failed!");
-//			}
-//		}
-//	});
+    confirmBonds.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent arg0) {
+			Integer num = Integer.valueOf(numBonds.getText());
+			String stock_id = (String) bondMenu.getSelectedItem();
+			
+			switch(stock_id) {
+			case "week long":
+				if(MainPage.bank.buyBond(num, "1", Property.InterestRate.WEEK, 0.01, account_id)) {
+					  JFrame success = new JFrame();
+		              JOptionPane.showMessageDialog(success, "Purchase succesful!");
+				}
+				else {
+				  JFrame fail = new JFrame();
+	              JOptionPane.showMessageDialog(fail, "Purchase failed!");
+				}
+				break;
+			case "month long":
+				if(MainPage.bank.buyBond(num, "2", Property.InterestRate.MONTH, 0.02, account_id)) {
+					  JFrame success = new JFrame();
+		              JOptionPane.showMessageDialog(success, "Purchase succesful!");
+				}
+				else {
+				  JFrame fail = new JFrame();
+	              JOptionPane.showMessageDialog(fail, "Purchase failed!");
+				}
+				break;
+			case "3-month long":
+				if(MainPage.bank.buyBond(num, "3", Property.InterestRate.YEAR, 0.05, account_id)) {
+					  JFrame success = new JFrame();
+		              JOptionPane.showMessageDialog(success, "Purchase succesful!");
+				}
+				else {
+				  JFrame fail = new JFrame();
+	              JOptionPane.showMessageDialog(fail, "Purchase failed!");
+				}
+				break;
+			}
+		}
+	});
     
     marketBuyPage.add(marketOrBuy);
     cards.add(marketBuyPage, "Market/Buy");
@@ -253,6 +276,7 @@ public class SecuritiesInterface extends JPanel {
     		continue;
     	
     	String col[] = info.split("-");
+    	
     	stockData[index][0] = col[0];
         stockData[index][1] = col[1];
         stockData[index][2] = col[2];
@@ -272,12 +296,41 @@ public class SecuritiesInterface extends JPanel {
     JLabel bondLabel = new JLabel("Bonds");
     bondLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     bondTab.add(bondLabel);
-    String[] bondColumnNames = {"Bond Type", "Interest Rate", "Date Purchased (MM/DD/YY)", "Days Until Maturity"};
+    String[] bondColumnNames = {"Bond Type", "Interest Rate", "Date Purchased (MM/DD/YY)", "Owned Shares"};
     Object[][] bondData = new Object[4][4];
-    bondData[0][0] = "Weekly";
-    bondData[0][1] = 0.01;
-    bondData[0][2] = "08/06/19";
-    bondData[0][3] = "7";
+//    bondData[0][0] = "Weekly";
+//    bondData[0][1] = 0.01;
+//    bondData[0][2] = "08/06/19";
+//    bondData[0][3] = "7";
+    
+    index = 0;
+    String bond_info = account.getInvestment();
+    for(String info : bond_info.split("\\|")) {
+    	System.out.println(info);
+    	if(info.contains("Bond")) {
+        	info = info.split(": ")[1];
+        	String col[] = info.split("-");
+        	
+        	if(col[0].equals("1")) {
+        		bondData[index][0] = "Weekly";
+        		bondData[index][1] = "0.01";
+        	}
+        	else if(col[0].equals("1")) {
+        		bondData[index][0] = "Monthly";
+        		bondData[index][1] = "0.02";
+        	}
+        	else {
+        		bondData[index][0] = "Yearly";
+    			bondData[index][1] = "0.05";
+        	}
+        	
+        	bondData[index][2] = ((SecurityAccount)UserMainPage.user.getAccount(account_id)).getNow(col[0]);
+        	
+        	bondData[index++][3] = col[1];
+    	}
+    }
+    
+    
     JTable bondTable = new JTable(bondData, bondColumnNames);
     JScrollPane bonds = new JScrollPane(bondTable);
     stocks.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -330,8 +383,8 @@ public class SecuritiesInterface extends JPanel {
     bondPane.setLayout(new BoxLayout(bondPane, BoxLayout.LINE_AXIS));
     JLabel sellBonds = new JLabel("Sell ");
     bondPane.add(sellBonds);
-    JTextField numBonds = new JTextField("# of bonds");
-    bondPane.add(numBonds);
+//    JTextField numBonds = new JTextField("# of bonds");
+//    bondPane.add(numBonds);
     String[] bondTypes = {"week long", "month long", "3-month long"};
     JComboBox<String> bondMenu = new JComboBox<String>(bondTypes);
     bondPane.add(bondMenu);
@@ -340,6 +393,48 @@ public class SecuritiesInterface extends JPanel {
     JButton confirmBonds = new JButton("Sell bonds");
     bondPane.add(confirmBonds);
     sellTab.add(bondPane);
+    
+    confirmBonds.addMouseListener(new MouseAdapter() {
+    	@Override
+		public void mouseClicked(MouseEvent arg0) {
+			//Integer num = Integer.valueOf(numBonds.getText());
+			String stock_type = (String) bondMenu.getSelectedItem();
+			
+			switch(stock_type) {
+			case "week long":
+				if(MainPage.bank.sellBond(account_id, "1")) {
+					  JFrame success = new JFrame();
+					  JOptionPane.showMessageDialog(success, "Sale succesful!");
+					}
+					else {
+					  JFrame fail = new JFrame();
+		              JOptionPane.showMessageDialog(fail, "Sale failed!");
+					}
+				break;
+			case "month long":
+				if(MainPage.bank.sellBond(account_id, "2")) {
+					  JFrame success = new JFrame();
+					  JOptionPane.showMessageDialog(success, "Sale succesful!");
+					}
+					else {
+					  JFrame fail = new JFrame();
+		              JOptionPane.showMessageDialog(fail, "Sale failed!");
+					}
+				break;
+			case "3-month long":
+				if(MainPage.bank.sellBond(account_id, "3")) {
+					  JFrame success = new JFrame();
+					  JOptionPane.showMessageDialog(success, "Sale succesful!");
+					}
+					else {
+					  JFrame fail = new JFrame();
+		              JOptionPane.showMessageDialog(fail, "Sale failed!");
+					}
+				break;
+			}
+			
+		}
+	});
     
     viewOrSell.addTab("Sell Investments", sellTab);
     cards.add(viewSellPage, "View/Sell");

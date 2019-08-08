@@ -43,15 +43,15 @@ public class Property {
 		interest = in;
 		switch(irate) {
 			case WEEK:
-				due = now.plus(Duration.ofDays(7));
+				due = now.plus(Duration.ofSeconds(3));
 				break;
 			
 			case MONTH:
-				due = now.plus(Duration.ofDays(30));
+				due = now.plus(Duration.ofSeconds(7));
 				break;
 			
 			default:
-				due = now.plus(Duration.ofDays(365));
+				due = now.plus(Duration.ofSeconds(10));
 		}
 	}
 	

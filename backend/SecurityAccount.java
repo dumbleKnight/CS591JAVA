@@ -29,6 +29,10 @@ public class SecurityAccount extends Account {
 		property = new HashMap<String, Property>();
 	}
 	
+	public String getNow(String sid) {
+		return parseInstant(property.get(sid).getNow());
+	}
+	
 	public String getInvestment() {
 		StringBuilder sp = new StringBuilder();
 		
