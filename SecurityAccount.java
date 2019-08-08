@@ -79,18 +79,59 @@ public class SecurityAccount extends Account {
 			else {
 				investmentId = (String) propertyObj.get("investmentId");
 				name = (String) propertyObj.get("name");
-				price = (double) propertyObj.get("price");
 				amount = (double) propertyObj.get("amount");
 				interest = (double) propertyObj.get("interest");
 				due = parseTime((String) propertyObj.get("due"));
 				now = parseTime((String) propertyObj.get("now"));
-				Bond invest = new Bond(investmentId, interest, price, name);
+				Bond invest = new Bond(investmentId, interest, name);
 				System.out.println(invest);
 				Property prop = new Property(invest, now, due, amount, interest);
 				property.put(investmentId, prop);
 				
 			}
 		}
+	}
+	
+	public void storeProperty(JSONArray finalJSON) {
+		JSONObject aidObj = new JSONObject();
+		JSONArray propList = new JSONArray();
+		for (Property prop : property.values()) {
+			JSONObject propObj = new JSONObject();
+			String type = prop.getType();
+			propObj.put("type", type);
+			if (type.equals("Bond")) {
+				String investmentId = prop.getID();
+				String name = prop.getName(); 
+				String now = parseInstant(prop.getNow());
+			    String due = parseInstant(prop.getDue());
+			    double amount = prop.getAmount();
+			    double interest = prop.getInterest();
+			    
+			    propObj.put("investmentId", investmentId);
+			    propObj.put("name", name);
+			    propObj.put("now", now);
+			    propObj.put("due", due);
+			    propObj.put("amount", amount);
+			    propObj.put("interest", interest);
+			}
+			else {
+				String investmentId = prop.getID();
+				String name = prop.getName(); 
+				String now = parseInstant(prop.getNow());
+				double price = prop.getPrice();
+				double amount = prop.getAmount();
+				
+				propObj.put("investmentId", investmentId);
+			    propObj.put("name", name);
+			    propObj.put("now", now);
+			    propObj.put("price", price);
+			    propObj.put("amount", amount);
+			    
+			}
+			propList.add(propObj);
+		}
+		aidObj.put(Aid,propList);
+		finalJSON.add(aidObj);
 	}
 	
 	private Instant parseTime(String time) {

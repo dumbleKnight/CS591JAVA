@@ -85,10 +85,8 @@ public class Bank {
 		double interest = (double) bond.get("interest");
 		System.out.println("interest is " + interest);
 		
-		double price = (double) bond.get("price");
-		System.out.println("price is " + price);
 		
-		Bond temp = new Bond(investmentId, interest, price, name);
+		Bond temp = new Bond(investmentId, interest, name);
 		
 		investments.put(investmentId, temp);
 		
@@ -277,6 +275,45 @@ public class Bank {
 		for (User user : users.values()) {
 			user.toAccount(finalJSON);
 		}
+		try
+        {
+            
+            // Create a new FileWriter object
+            FileWriter fileWriter = new FileWriter("/Users/kangtungho/Desktop/tranOutput.json");
+
+            // Writting the jsonObject into sample.json
+            fileWriter.write(finalJSON.toJSONString());
+            fileWriter.close();
+
+            System.out.println("JSON Object Successfully written to the file!!");
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+	}
+	
+	public void writeProperty() {
+		JSONArray finalJSON = new JSONArray();
+		for (User user : users.values()) {
+			user.toSecurity(finalJSON);
+		}
+		try
+        {
+            
+            // Create a new FileWriter object
+            FileWriter fileWriter = new FileWriter("/Users/kangtungho/Desktop/propOutput.json");
+
+            // Writting the jsonObject into sample.json
+            fileWriter.write(finalJSON.toJSONString());
+            fileWriter.close();
+
+            System.out.println("JSON Object Successfully written to the file!!");
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 	}
     
     public void getUserCount() {
@@ -326,7 +363,7 @@ public class Bank {
 //			return false;
 //		}
 		String sid = generateInvestmentId();
-		Bond temp = new Bond(sid, interest, price, name);
+		Bond temp = new Bond(sid, interest, name);
 		investments.put(sid, temp);
 		return true;
 	}

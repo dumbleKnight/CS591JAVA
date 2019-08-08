@@ -92,8 +92,43 @@ public class Property {
 		}
 		return false;
 	}
+	
+	public String getID() {
+		return investment.id;
+	}
+	
+	public String getType() {
+		return investment.type;
+	}
+	
+	public double getPrice() {
+
+		return ((Stock) investment).getPrice();
+
+	}
+	
+	public String getName() {
+		if (investment instanceof Stock) {
+			return ((Stock) investment).getName();
+		}
+		else {
+			return ((Bond) investment).getName();
+		}
+		
+	}
+	
+	public Instant getNow() {
+		return now;
+	}
+	
+	public Instant getDue() {
+		return due;
+	}
 
 	public double getAmount() {
 		return amount;
+	}
+	public double getInterest() {
+		return interest;
 	}
 }

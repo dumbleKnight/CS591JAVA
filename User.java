@@ -46,7 +46,7 @@ public class User {
 	
 	public void printAccounts() {
 		for (Account acc : accounts.values()) {
-			System.out.println(acc.Aid);
+			System.out.println(acc.type.equals(AccountType.Checking));
 		}
 	}
 	
@@ -144,6 +144,16 @@ public class User {
 		for (Account acc : accounts.values()) {
 			acc.storeTrans(finalJSON);
 		}
+	}
+	
+	public void toSecurity(JSONArray finalJSON) {
+		for (Account acc: accounts.values()) {
+			//System.out.println(acc.type);
+			if (acc.type==AccountType.Security) {
+				((SecurityAccount) acc).storeProperty(finalJSON);
+			}
+		}
+		
 	}
 	
 	

@@ -21,7 +21,7 @@ public class Account {
 	Account(String id, AccountType t){
 		money = 0;
 		Aid = id;
-		t = type;
+		type = t;
 		transactions = new ArrayList<Transaction>();
 		//transactions_init()
 	}
@@ -29,7 +29,7 @@ public class Account {
 	Account(String id, AccountType t, double m) {
 		money = m;
 		Aid = id;
-		t = type;
+		type = t;
 		transactions = new ArrayList<Transaction>();
 		//transactions_init()
 	}
@@ -170,22 +170,7 @@ public class Account {
 		aidObj.put(Aid,transList);
 		finalJSON.add(aidObj);
 		
-		try
-        {
-            
-            // Create a new FileWriter object
-            FileWriter fileWriter = new FileWriter("/Users/kangtungho/Desktop/tranOutput.json");
-
-            // Writting the jsonObject into sample.json
-            fileWriter.write(finalJSON.toJSONString());
-            fileWriter.close();
-
-            System.out.println("JSON Object Successfully written to the file!!");
-
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+		
 	}
 	
 	//account saves money m

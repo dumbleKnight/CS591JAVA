@@ -1,13 +1,11 @@
 public class Bond extends Investment{
 	protected double interest;
-	protected double price;
 	protected String name;
 	
 	
-	Bond(String ID, double interest, double price, String name) {
+	Bond(String ID, double interest, String name) {
 		super(ID, "Bond");
 		this.interest = interest;
-		this.price = price;
 		this.name = name;
 	}
 	
@@ -19,6 +17,10 @@ public class Bond extends Investment{
 	
 	public double getInterest() {
 		return this.interest;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	/*static public enum InterestRate{
 		WEEK, MONTH, YEAR

@@ -10,7 +10,8 @@ public class main {
 		//bank.showAccounts();
 		//bank.writeUser();
 		//bank.writeAccount();
-		bank.writeTransaction();
+		//bank.writeTransaction();
+		bank.writeProperty();
 		//System.out.println(bank.getInvestmentInfo());
 	}
 }
