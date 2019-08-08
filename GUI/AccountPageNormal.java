@@ -40,6 +40,17 @@ public class AccountPageNormal {
 	public AccountPageNormal(String account_id) {
 		this.account_id = account_id;
 		initialize();
+		
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        MainPage.bank.writeUser();
+		        MainPage.bank.writeAccount();
+		        MainPage.bank.writeTransaction();
+		        MainPage.bank.writeProperty();
+		    	System.exit(0);
+		    }
+		});
 	}
 
 	/**

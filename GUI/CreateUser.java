@@ -41,6 +41,17 @@ public class CreateUser {
 	 */
 	public CreateUser() {
 		initialize();
+		
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        MainPage.bank.writeUser();
+		        MainPage.bank.writeAccount();
+		        MainPage.bank.writeTransaction();
+		        MainPage.bank.writeProperty();
+		    	System.exit(0);
+		    }
+		});
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 
@@ -37,6 +38,17 @@ public class ManagerMainPage {
 	 */
 	public ManagerMainPage() {
 		initialize();
+		
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        MainPage.bank.writeUser();
+		        MainPage.bank.writeAccount();
+		        MainPage.bank.writeTransaction();
+		        MainPage.bank.writeProperty();
+		    	System.exit(0);
+		    }
+		});
 	}
 
 	/**
@@ -73,6 +85,16 @@ public class ManagerMainPage {
 			    }
 			}
 		});
+		
+		JButton cancelButton = new JButton("Back");
+        cancelButton.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+            new MainPage();
+            frame.dispose();
+          }
+        });
+        cancelButton.setBounds(100, 200, 100, 39);
+        frame.getContentPane().add(cancelButton);
 		
 		frame.setVisible(true);
 	}

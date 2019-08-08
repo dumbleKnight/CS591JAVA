@@ -14,19 +14,26 @@ public class Property {
 		WEEK, MONTH, YEAR
 	}
 	
+	Property(Investment i, Instant now, Instant due, double amount, double interest) {
+		//for initializing bond from DB 
+		this.investment = i;
+		this.now = now;
+		this.due = due;
+		this.amount = amount;
+		this.interest = interest;
+	}
+	
+	Property(double a, Investment i, Instant now) {
+		amount = a;
+		investment = i;
+		this.now = now;
+	}
+	
 	Property(double a, Investment i) {
+		//why do we need now
 		amount = a;
 		investment = i;
 		now = Instant.now();
-	}
-	
-	public String toString() {
-		StringBuilder sp = new StringBuilder();
-		sp.append(investment);
-		sp.append("-");
-		sp.append(amount);
-		
-		return sp.toString();
 	}
 	
 	Property(double a, Investment i, InterestRate irate, double in){
@@ -46,6 +53,16 @@ public class Property {
 			default:
 				due = now.plus(Duration.ofDays(365));
 		}
+	}
+	
+
+	public String toString() {
+		StringBuilder sp = new StringBuilder();
+		sp.append(investment);
+		sp.append("-");
+		sp.append(amount);
+		
+		return sp.toString();
 	}
 	
 	//only can be triggered if the property is stock
@@ -88,7 +105,43 @@ public class Property {
 		return false;
 	}
 
+	public String getID() {
+		return investment.id;
+	}
+	
+	public String getType() {
+		return investment.type;
+	}
+	
+	public double getPrice() {
+
+		return ((Stock) investment).getPrice();
+
+	}
+	
+	public String getName() {
+		if (investment instanceof Stock) {
+			return ((Stock) investment).getName();
+		}
+		else {
+			return ((Bond) investment).getName();
+		}
+		
+	}
+	
+	public Instant getNow() {
+		return now;
+	}
+	
+	public Instant getDue() {
+		return due;
+	}
+	
 	public double getAmount() {
 		return amount;
+	}
+	
+	public double getInterest() {
+		return interest;
 	}
 }

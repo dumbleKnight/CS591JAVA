@@ -1,6 +1,19 @@
 package backend;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -9,6 +22,11 @@ public class Bank {
 	private HashMap<String, Investment> investments;
 	private static int userCount;
 	private static int investmentCount;
+	static String userPath = "src/backend/user.json";
+	static String accountPath = "src/backend/account.json";
+	static String investPath = "src/backend/investments.json";
+	private static String transPath = "src/backend/transaction.json";
+	private static String propertyPath = "src/backend/property.json";
 	
 	public Bank() {
 		userCount = 0;
@@ -16,14 +34,310 @@ public class Bank {
 		users = new HashMap<String, User>();
 		investments = new HashMap<String, Investment>();
 		
-		addStock(10.0, "Google", "GOOGL");
-		addStock(10.0, "Apple", "AAPL");
-		addStock(10.0, "Microsoft", "MSFT");
+		investments_init();
+		user_init();
 		
-		addBond();
-		addBond();
-		addBond();
+//		addStock(10.0, "Google", "GOOGL");
+//		addStock(10.0, "Apple", "AAPL");
+//		addStock(10.0, "Microsoft", "MSFT");
+//		
+//		addBond();
+//		addBond();
+//		addBond();
 	}
+	
+	public void changePrice() {
+		for (Investment invest: investments.values()) {
+			if (invest instanceof Stock) {
+				((Stock)invest).change();
+			}
+		}
+	}
+	
+	private void investments_init() {
+		//initialize stocks and bonds using data from DB
+		JSONParser jsonParser = new JSONParser();
+        
+        try (FileReader reader = new FileReader(investPath))
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+ 
+            JSONArray investList = (JSONArray) obj;
+            //System.out.println(userList);
+             
+            //Iterate over employee array
+            //userList.forEach( usr -> parseUserObject( (JSONObject) usr ) );
+            for (int i = 0; i < 3; i++) {
+            	parseBondObject((JSONObject)investList.get(i));
+            }
+            for (int i = 3; i < investList.size(); i++) {
+            	parseStockObject((JSONObject) investList.get(i));
+            }
+            investmentCount = investList.size();
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	private void parseBondObject(JSONObject bond) {
+		String investmentId = (String) bond.get("investmentId");
+		System.out.println(investmentId);
+		
+		String name = (String) bond.get("name");
+		System.out.println(name);
+		
+		double interest = (double) bond.get("interest");
+		System.out.println("interest is " + interest);
+		
+		
+		Bond temp = new Bond(investmentId, interest, name);
+		
+		investments.put(investmentId, temp);
+		
+	}
+	
+	private void parseStockObject(JSONObject stock) {
+		String investmentId = (String) stock.get("investmentId");
+		System.out.println(investmentId);
+		
+		double price = (double) stock.get("price");
+		System.out.println(price);
+			
+		String name = (String) stock.get("name");
+		System.out.println(name);
+		
+		Stock temp = new Stock(investmentId, price, name);
+		
+		investments.put(investmentId, temp);
+		
+		
+		
+	}
+	
+	private void user_init() {
+		//initialize existing users from DB
+		//first check for if data base is empty
+		//1. fill in user data (new User)
+		//2. once we have the aid list, fill up the account info (new Account)
+		//3. create new Transaction based on the JSON mapping
+		//4. add transcations to the assotiated account
+		//5. fill in the hashmap for user aid->account mapping
+		//6. repeat until every user JSON file is finished
+		
+		JSONParser jsonParser = new JSONParser();
+        
+        try (FileReader reader = new FileReader(userPath))
+        {
+            //Read JSON file
+            Object obj = jsonParser.parse(reader);
+ 
+            JSONArray userList = (JSONArray) obj;
+            //System.out.println(userList);
+             
+            //Iterate over employee array
+            //userList.forEach( usr -> parseUserObject( (JSONObject) usr ) );
+            for (int i = 0; i < userList.size(); i++) {
+            	parseUserObject((JSONObject)userList.get(i), jsonParser);
+            }
+            userCount = userList.size();
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	public static boolean contains(ArrayList<String> aid_array, String targetValue) {
+	    for (String s: aid_array) {
+	        if (s.equals(targetValue))
+	            return true;
+	    }
+	    return false;
+	}
+	
+	private void parseUserObject(JSONObject user, JSONParser parser)
+    {
+		String aid;
+        //Get user id
+        String uid = (String) user.get("uid");
+        
+        
+        //Get user password
+        String password = (String) user.get("password");
+        
+         
+        //Get user name
+        String name = (String) user.get("name");
+        
+        
+        JSONArray js_array = (JSONArray) user.get("aids");
+        ArrayList<String> aid_array = new ArrayList<String>();
+        for (int i = 0; i < js_array.size(); i++) {
+        	aid_array.add(String.valueOf(js_array.get(i)));
+        }
+        
+//        System.out.println("uid is: " + uid);
+//        System.out.println("password is: " + password);
+//        System.out.println("name is: " + name);
+//        System.out.println(Arrays.toString(aid_array));
+        
+        User temp = new User(uid, password, name, aid_array);
+        
+        //Fill in the hashmap for aid->account mapping
+        try (FileReader reader = new FileReader(accountPath))
+        {
+            //Read JSON file
+            Object obj = parser.parse(reader);
+ 
+            JSONArray accountList = (JSONArray) obj;
+            //System.out.println(userList);
+            JSONObject accountObj;
+            //Iterate over employee array
+            //userList.forEach( usr -> parseUserObject( (JSONObject) usr ) );
+            for (int i = 0; i < accountList.size(); i++) {
+            	//each user object from the previous loop will loop through the Account Json file once
+            	//initializes variables inside each user object and add it to the uid->user hashmap
+            	accountObj = (JSONObject) accountList.get(i);
+            	aid = (String) accountObj.get("aid");
+            	if (contains(aid_array, aid)) {
+            		temp.parseUserAccount(accountObj);
+            	}
+            	
+            }
+            users.put(uid, temp);
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        
+    }
+	
+
+	public void writeUser() {
+		JSONArray finalJSON = new JSONArray();
+		for (User user : users.values()) {
+			JSONObject jsonObject = new JSONObject();
+		
+		    String uid = user.getUid();
+		    jsonObject.put("uid", uid);
+		    String password = user.getPassword();
+		    jsonObject.put("password", password);
+		    String name = user.getName();
+		    jsonObject.put("name", name);
+		    ArrayList<String> aids = user.getAids();
+		    JSONArray jsonArray = new JSONArray();
+		    for (String s: aids) {
+		    	jsonArray.add(s);
+		    }
+		    jsonObject.put("aids", jsonArray);
+		    finalJSON.add(jsonObject);
+		    
+		    
+		}
+		 try
+	        {
+	            
+	            // Create a new FileWriter object
+	            FileWriter fileWriter = new FileWriter(userPath);
+
+	            // Writting the jsonObject into sample.json
+	            fileWriter.write(finalJSON.toJSONString());
+	            fileWriter.close();
+
+	            System.out.println("JSON Object Successfully written to the file!!");
+
+	        } catch (Exception e)
+	        {
+	            e.printStackTrace();
+	        }
+	}
+	
+	public void writeAccount() {
+		JSONArray finalJSON = new JSONArray();
+		for (User user : users.values()) {
+			System.out.println(user.getName());
+			user.storeAccount(finalJSON);
+		}
+		try
+        {
+            // Create a new FileWriter object
+            FileWriter fileWriter = new FileWriter(accountPath);
+
+            // Writting the jsonObject into sample.json
+            fileWriter.write(finalJSON.toJSONString());
+            fileWriter.close();
+
+            System.out.println("JSON Object Successfully written to the file!!");
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+	}
+	
+	public void writeTransaction() {
+		JSONArray finalJSON = new JSONArray();
+		for (User user : users.values()) {
+			user.toAccount(finalJSON);
+		}
+		try
+        {
+            
+            // Create a new FileWriter object
+            FileWriter fileWriter = new FileWriter(transPath);
+
+            // Writting the jsonObject into sample.json
+            fileWriter.write(finalJSON.toJSONString());
+            fileWriter.close();
+
+            System.out.println("JSON Object Successfully written to the file!!");
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+	}
+	
+	public void writeProperty() {
+		JSONArray finalJSON = new JSONArray();
+		for (User user : users.values()) {
+			user.toSecurity(finalJSON);
+		}
+		try
+        {
+            
+            // Create a new FileWriter object
+            FileWriter fileWriter = new FileWriter(propertyPath);
+
+            // Writting the jsonObject into sample.json
+            fileWriter.write(finalJSON.toJSONString());
+            fileWriter.close();
+
+            System.out.println("JSON Object Successfully written to the file!!");
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+	}
+    
+    public void getUserCount() {
+    	System.out.println(userCount);
+    }
+    
 	
 	private String generateUserId() {
 		StringBuilder sb = new StringBuilder();
@@ -55,19 +369,19 @@ public class Bank {
 		return true;
 	}
 	
-	public boolean addBond() {
-		String sid = generateInvestmentId();
-		Bond temp = new Bond(sid);
-		investments.put(sid, temp);
-		return true;
-	}
+//	public boolean addBond() {
+//		String sid = generateInvestmentId();
+//		Bond temp = new Bond(sid);
+//		investments.put(sid, temp);
+//		return true;
+//	}
 	
-	public boolean addBond(double d1, double d2, double d3) {
-		if(d1 <= 0.0 || d2 <= 0.0 || d3 <= 0.0) {
-			return false;
-		}
+	public boolean addBond(double interest, double price, String name) {
+//		if(d1 <= 0.0 || d2 <= 0.0 || d3 <= 0.0) {
+//			return false;
+//		}
 		String sid = generateInvestmentId();
-		Bond temp = new Bond(sid, d1, d2, d3);
+		Bond temp = new Bond(sid, interest, name);
 		investments.put(sid, temp);
 		return true;
 	}
@@ -313,6 +627,7 @@ public class Bank {
 	public String getInvestmentInfo() {
 		StringBuilder sb = new StringBuilder();
 		for(Entry<String, Investment> e : investments.entrySet()) {
+			//System.out.println(e.getValue());
 			sb.append(e.getValue());
 			sb.append("|");
 		}

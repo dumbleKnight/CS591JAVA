@@ -131,14 +131,14 @@ public class SecuritiesInterface extends JPanel {
     String stock_info = MainPage.bank.getInvestmentInfo();
     for(String each_stock: stock_info.split("\\|")) {
     	if(each_stock.contains("Bond"))
-    		break;
+    		continue;
     	
     	System.out.println(each_stock);
     	String info[] = each_stock.split("-");
     	
     	data[index][0] = info[0];
     	data[index][1] = info[1];
-    	data[index][2] = info[2];
+    	data[index][2] = "Ticker";
     	data[index][3] = info[3];
     	data[index++][4] = "TODO";
     }
@@ -176,7 +176,7 @@ public class SecuritiesInterface extends JPanel {
 			if(MainPage.bank.buyStock(stock_id, num, 0.0, account_id)) {
 			  JFrame success = new JFrame();
               JOptionPane.showMessageDialog(success, "Purchase succesful!");
-
+              MainPage.bank.changePrice();
 				
 			}
 			else {
@@ -203,6 +203,25 @@ public class SecuritiesInterface extends JPanel {
     bondPane.add(confirmBonds);
     buyPage.add(bondPane);
     marketOrBuy.addTab("Buy Investments", buyPage);
+    
+//    confirmBonds.addMouseListener(new MouseAdapter() {
+//		@Override
+//		public void mouseClicked(MouseEvent arg0) {
+//			Integer num = Integer.valueOf(numBonds.getText());
+//			String stock_id = (String) bondMenu.getSelectedItem();
+//			
+//			if(MainPage.bank.buyBond(Money, sid, irate, interest, account_id)) {
+//			  JFrame success = new JFrame();
+//              JOptionPane.showMessageDialog(success, "Purchase succesful!");
+//              MainPage.bank.changePrice();
+//				
+//			}
+//			else {
+//			  JFrame fail = new JFrame();
+//              JOptionPane.showMessageDialog(fail, "Purchase failed!");
+//			}
+//		}
+//	});
     
     marketBuyPage.add(marketOrBuy);
     cards.add(marketBuyPage, "Market/Buy");
@@ -231,7 +250,7 @@ public class SecuritiesInterface extends JPanel {
     for(String info : investment_info.split("\\|")) {
     	System.out.println(info);
     	if(info.contains("Bond"))
-    		break;
+    		continue;
     	
     	String col[] = info.split("-");
     	stockData[index][0] = col[0];

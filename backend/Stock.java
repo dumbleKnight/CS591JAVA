@@ -1,19 +1,29 @@
 package backend;
 
+import java.util.Random;
+
 public class Stock extends Investment {
 	private double price;
 	private String name;
 	private String ticker;
 	Stock(String ID, double p, String n, String t) {
-		super(ID);	
+		super(ID, "Stock");	
 		setPrice(p);
 		setName(n);
 		setTicker(t);
 	}
 	
+	Stock(String ID, double p, String n) {
+		super(ID, "Stock");	
+		setPrice(p);
+		setName(n);
+	}
+	
 	// change the price of the stock 
-	private void change() { 
-		// to be continued
+	public void change() { 
+		Random ran = new Random();
+		double x = ran.nextInt(10) - 5;
+		price = price + x;
 	}
 	
 	public String toString() {
