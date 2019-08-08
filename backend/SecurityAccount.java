@@ -71,7 +71,7 @@ public class SecurityAccount extends Account {
 	}
 	
 	public boolean sellStock(String sid, double amount, double price) {
-		if(!property.containsKey(sid) || amount > property.get(sid).getAmount() || price <= 0.0) {
+		if(!property.containsKey(sid) || amount > property.get(sid).getAmount()) {
 			return false;
 		}
 		Property temp = property.get(sid);

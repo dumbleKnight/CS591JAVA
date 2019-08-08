@@ -1,3 +1,5 @@
+package GUI;
+
 import java.awt.EventQueue;
 import java.util.ArrayList;
 
@@ -49,7 +51,8 @@ public class ManagerCheckPage {
 		frame.getContentPane().add(user_record_list);
 		
 		ArrayList<String> user_info = new ArrayList<String>();
-		model.addElement(MainPage.bank.getUser(uid).toString());
+		for(String record: MainPage.bank.getUser(uid).toString().split("\\|"))
+		  model.addElement(record);
 		
 		frame.setVisible(true);
 	}

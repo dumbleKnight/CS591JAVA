@@ -1,9 +1,16 @@
+package GUI;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
@@ -14,6 +21,7 @@ public class CreateAccount {
 	private JFrame frame;
 	private JTextField balance_txt;
 	private JButton confirm_btn;
+	private JPanel contentPane;
 
 	/**
 	 * Launch the application.
@@ -45,27 +53,56 @@ public class CreateAccount {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		contentPane = new JPanel();
+		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
 		
+		contentPane.add(Box.createVerticalGlue());
 		DefaultListModel<String> model = new DefaultListModel<>();
 		JList type_list = new JList(model);
-		type_list.setBounds(117, 69, 195, 64);
-		frame.getContentPane().add(type_list);
+		//type_list.setBounds(117, 69, 195, 64);
+		type_list.setFixedCellWidth(150);
+		type_list.setFixedCellHeight(30);
+		contentPane.add(type_list);
+		//type_list.setPreferredSize(new Dimension(117, 69));
+		contentPane.add(type_list);
 		
 		model.addElement("Saving account");
 		model.addElement("Checking account");
 		model.addElement("Security account");
 		
+		contentPane.add(Box.createVerticalGlue());
 		
-		JLabel lblNewLabel = new JLabel("Balance");
-		lblNewLabel.setBounds(117, 152, 62, 16);
-		frame.getContentPane().add(lblNewLabel);
+		JPanel balancePane = new JPanel();
+		balancePane.setLayout(new BoxLayout(balancePane, BoxLayout.LINE_AXIS));
+		JLabel lblNewLabel = new JLabel("Balance: ");
+		//lblNewLabel.setBounds(117, 152, 62, 16);
 		
-		balance_txt = new JTextField();
-		balance_txt.setBounds(196, 146, 116, 22);
-		frame.getContentPane().add(balance_txt);
-		balance_txt.setColumns(10);
+		balancePane.add(lblNewLabel);
 		
+		balance_txt = new JTextField(10);
+		balance_txt.setMaximumSize(new Dimension(100, 20));
+		//balance_txt.setBounds(196, 146, 116, 22);
+		balancePane.add(balance_txt);
+		//balance_txt.setColumns(10);
+		
+		contentPane.add(Box.createVerticalGlue());
+		
+		contentPane.add(balancePane);
+		
+		contentPane.add(Box.createVerticalGlue());
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+		
+		JButton cancelButton = new JButton("Cancel");
+        cancelButton.addMouseListener(new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+            new UserMainPage();
+            frame.dispose();
+          }
+        });
+        cancelButton.setBounds(100, 181, 100, 39);
+        buttonPane.add(cancelButton);
+        
 		confirm_btn = new JButton("Confirm");
 		confirm_btn.addMouseListener(new MouseAdapter() {
 			@Override
@@ -100,9 +137,14 @@ public class CreateAccount {
 		});
 		
 		confirm_btn.setBounds(152, 181, 138, 39);
-		frame.getContentPane().add(confirm_btn);
+		buttonPane.add(confirm_btn);
 		
+		
+		contentPane.add(buttonPane);
+		contentPane.add(Box.createVerticalGlue());
+		frame.add(contentPane, BorderLayout.CENTER);
 		frame.setVisible(true);
+		
 	}
 
 }

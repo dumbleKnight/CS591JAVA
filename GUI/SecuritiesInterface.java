@@ -1,4 +1,5 @@
-//package finalProject;
+package GUI;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -20,6 +21,7 @@ public class SecuritiesInterface extends JPanel {
   public static String account_id;
   private static JFrame frame;
   private static final JPanel cards = new JPanel(new CardLayout());
+  private static String currentPanel;
   
   
   public SecuritiesInterface() {
@@ -39,17 +41,23 @@ public class SecuritiesInterface extends JPanel {
     frame.setBounds(100, 100, 450, 300);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     createMainPage();
-//    createMarketBuyPage();
-//    createViewSellPage();
-//    createHistoryPage();
+    
+    CardLayout cl = (CardLayout)(cards.getLayout());
+    cl.show(cards, "Main");
     
     frame.add(cards, BorderLayout.CENTER);
     JButton backButton = new JButton("Go Back");
     backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     backButton.addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
-        CardLayout cl = (CardLayout)(cards.getLayout());
-        cl.show(cards, "Main");
+        if (!currentPanel.equals("Main")) {
+          currentPanel = "Main";
+          cl.show(cards, "Main");
+        }
+        else {
+          new UserMainPage();
+          frame.dispose();
+        }
       }
     });
     frame.add(backButton, BorderLayout.SOUTH);
@@ -57,6 +65,7 @@ public class SecuritiesInterface extends JPanel {
   }
   
   private static void createMainPage() {
+    currentPanel = "Main";
     SecuritiesInterface welcomePage = new SecuritiesInterface("Welcome to your trading portfolio!");
     JLabel questionLbl = new JLabel("What would you like to do?");
     questionLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -79,14 +88,17 @@ public class SecuritiesInterface extends JPanel {
           switch (desiredAction) {
             case "View current market/Purchase investments":
             	createMarketBuyPage();
+            	currentPanel = "Market/Buy";
               cl.show(cards, "Market/Buy");
               break;
             case "View/Sell my investments":
             	createViewSellPage();
+            	currentPanel = "View/Sell";
               cl.show(cards, "View/Sell");
               break;
             case "View my trading history":
             	createHistoryPage();
+            	currentPanel = "History";
               cl.show(cards, "History");
               break;
           }
@@ -107,12 +119,14 @@ public class SecuritiesInterface extends JPanel {
     JPanel marketPage = new JPanel();
     String[] columnNames = {"Stock ID", "Company Name", "Ticker Symbol", "Current Price (USD)", "Percentage Change"};
     Object[][] data = new Object[10][5];
+    /*
     data[0][0] = "Test Stock";
     data[0][1] = "TST";
     data[0][2] = 34;
     data[0][3] = "0.0%";
+    */
     
-    int index = 1;
+    int index = 0;
     //String stock_info = (new Bank()).getInvestmentInfo();
     String stock_info = MainPage.bank.getInvestmentInfo();
     for(String each_stock: stock_info.split("\\|")) {
@@ -144,11 +158,11 @@ public class SecuritiesInterface extends JPanel {
     stockPane.setLayout(new BoxLayout(stockPane, BoxLayout.LINE_AXIS));
     JLabel purchaseStocks = new JLabel("Purchase ");
     stockPane.add(purchaseStocks);
-    JTextField numShares = new JTextField("# of shares");
+    JTextField numShares = new JTextField("# of shares", 6);
     stockPane.add(numShares);
     JLabel ofMessage = new JLabel(" of ");
     stockPane.add(ofMessage);
-    JTextField stockType = new JTextField("Ticker Symbol");
+    JTextField stockType = new JTextField("Stock ID", 6);
     stockPane.add(stockType);
     JButton confirmStocks = new JButton("Buy stocks");
     stockPane.add(confirmStocks);
@@ -160,13 +174,14 @@ public class SecuritiesInterface extends JPanel {
 			String stock_id = stockType.getText();
 			
 			if(MainPage.bank.buyStock(stock_id, num, 0.0, account_id)) {
-				System.out.println("Succeed");
+			  JFrame success = new JFrame();
+              JOptionPane.showMessageDialog(success, "Purchase succesful!");
 
-				new UserMainPage();
-				frame.dispose();
+				
 			}
 			else {
-				System.out.println("Failed");
+			  JFrame fail = new JFrame();
+              JOptionPane.showMessageDialog(fail, "Purchase failed!");
 			}
 		}
 	});
@@ -203,10 +218,12 @@ public class SecuritiesInterface extends JPanel {
     stockTab.add(stockLabel);
     String[] stockColumnNames = {"Stock ID", "Company Name", "Ticker Symbol", "Current Price (USD)", "Owned Shares", "Profit/Loss per Share (USD)"};
     Object[][] stockData = new Object[4][6];
+    /*
     stockData[0][0] = "Test Stock";
     stockData[0][1] = "TST";
     stockData[0][2] = "34";
     stockData[0][3] = "0.0";
+    */
     
     int index = 0;
     SecurityAccount account = (SecurityAccount) UserMainPage.user.getAccount(account_id);
@@ -260,30 +277,34 @@ public class SecuritiesInterface extends JPanel {
     stockPane.add(ofMessage);
     Object[] stockTypes = new String[stockTable.getModel().getRowCount()];
     for (int i = 0; i < stockTypes.length; i++) {
-      stockTypes[i] = stockTable.getModel().getValueAt(i,1);
+      stockTypes[i] = stockTable.getModel().getValueAt(i,0);
     }
     JComboBox<Object> stockMenu = new JComboBox<Object>(stockTypes);
     stockPane.add(stockMenu);
     JButton confirmStocks = new JButton("Sell stocks");
     stockPane.add(confirmStocks);
     sellTab.add(stockPane);
+    
     confirmStocks.addMouseListener(new MouseAdapter() {
     	@Override
 		public void mouseClicked(MouseEvent arg0) {
 			Integer num = Integer.valueOf(numShares.getText());
-			//String stock_id = stockMenu.get;
+			String stock_id = (String) stockMenu.getSelectedItem();
+			stock_id = stock_id.split("=")[1];
 			
-			if(MainPage.bank.buyStock(stock_id, num, 0.0, account_id)) {
-				System.out.println("Succeed");
+			if(MainPage.bank.sellStock(account_id, stock_id, num, 0.0)) {
+			  JFrame success = new JFrame();
+			  JOptionPane.showMessageDialog(success, "Sale succesful!");
 
-				new UserMainPage();
-				frame.dispose();
+				
 			}
 			else {
-				System.out.println("Failed");
+			  JFrame fail = new JFrame();
+              JOptionPane.showMessageDialog(fail, "Sale failed!");
 			}
 		}
 	});
+	
     
     
     JPanel bondPane = new JPanel();
@@ -306,7 +327,15 @@ public class SecuritiesInterface extends JPanel {
   }
   
   private static void createHistoryPage() {
-    SecuritiesInterface historyPage = new SecuritiesInterface("Transaction History");
+    SecuritiesInterface historyPage = new SecuritiesInterface("Trading History");
+    DefaultListModel<String> model = new DefaultListModel<>();
+    JList transaction_list = new JList(model);
+    String account_record[] = UserMainPage.user.getAccount(account_id).toString().split(" \\| ");
+    System.out.println(UserMainPage.user.getAccount(account_id).toString());
+    for(String transaction: account_record)
+        model.addElement(transaction);
+    
+    historyPage.add(transaction_list);
     cards.add(historyPage, "History");
   }
   

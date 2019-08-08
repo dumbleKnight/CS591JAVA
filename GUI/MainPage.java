@@ -1,12 +1,19 @@
+package GUI;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import backend.Bank;
 
 import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,6 +21,7 @@ import java.awt.event.MouseEvent;
 public class MainPage {
 	static public Bank bank;
 	private JFrame frame;
+	private JPanel contentPane;
 
 	/**
 	 * Launch the application.
@@ -47,17 +55,22 @@ public class MainPage {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		
+		contentPane = new JPanel();
+		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.LINE_AXIS));
+		contentPane.add(Box.createHorizontalGlue());
+		
 		
 		JLabel lblNewLabel = new JLabel("I'M A");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(70, 104, 116, 49);
-		frame.getContentPane().add(lblNewLabel);
+		//lblNewLabel.setBounds(70, 104, 116, 49);
+		contentPane.add(lblNewLabel);
 		
 		String roles[] = { "User", "Manager" };
 		JComboBox role_comboBox = new JComboBox(roles);
-		role_comboBox.setBounds(168, 104, 92, 49);
-		frame.getContentPane().add(role_comboBox);
+		//role_comboBox.setBounds(168, 104, 92, 49);
+		role_comboBox.setMaximumSize(new Dimension(100, 100));
+		contentPane.add(role_comboBox);
 		
 		
 		JButton Confirm_btn = new JButton("OK");
@@ -76,9 +89,10 @@ public class MainPage {
 				}
 			}
 		});
-		Confirm_btn.setBounds(272, 116, 97, 25);
-		frame.getContentPane().add(Confirm_btn);
-		
+		//Confirm_btn.setBounds(272, 116, 97, 25);
+		contentPane.add(Confirm_btn);
+		contentPane.add(Box.createHorizontalGlue());
+		frame.add(contentPane, BorderLayout.CENTER);
 		frame.setVisible(true);
 	}
 }

@@ -300,7 +300,7 @@ public class Bank {
 		Investment i = investments.get(sid);
 		User u = users.get(uid);
 		
-		if(i instanceof Stock && ((Stock) i).getPrice() > price) {
+		if(i instanceof Stock) {
 			if(u.sellStock(sender, sid, amount, price)) {
 				users.put(uid, u);
 				return true;
